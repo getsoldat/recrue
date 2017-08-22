@@ -1,7 +1,7 @@
 {
   "name": "atom-package-manager",
   "description": "Atom package manager",
-  "version": "1.18.5",
+  "version": "0.0.1",
   "license": "MIT",
   "repository": {
     "type": "git",
@@ -32,8 +32,8 @@
     "keytar": "^4.0",
     "mv": "2.0.0",
     "ncp": "~0.5.1",
-    "npm": "3.10.10",
-    "node-gyp": "3.4.0",
+    "npm": "5.3.0",
+    "node-gyp": "3.6.2",
     "open": "0.0.4",
     "plist": "git+https://github.com/nathansobo/node-plist.git",
     "q": "~0.9.7",
