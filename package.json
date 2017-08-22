@@ -1,18 +1,18 @@
 {
-  "name": "atom-package-manager",
-  "description": "Atom package manager",
+  "name": "@getsoldat/recrue",
+  "description": "Soldat app's recrue - Package manager",
   "version": "0.0.1",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/atom/apm.git"
+    "url": "https://github.com/getsoldat/recrue.git"
   },
   "bugs": {
-    "url": "https://github.com/atom/apm/issues"
+    "url": "https://github.com/getsoldat/recrue/issues"
   },
-  "main": "./lib/apm.js",
+  "main": "./lib/recrue.js",
   "bin": {
-    "apm": "./bin/apm"
+    "recrue": "./bin/recrue"
   },
   "scripts": {
     "build": "node script/check-version.js && grunt",

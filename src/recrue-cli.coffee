@@ -65,7 +65,7 @@ parseOptions = (args=[]) ->
   options = yargs(args).wrap(100)
   options.usage """
 
-    apm - Atom Package Manager powered by https://atom.io
+    recrue - Soldat Package Manager powered by https://soldat.tv
 
     Usage: apm <command>
 
