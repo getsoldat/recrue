@@ -21,11 +21,13 @@ module.exports =
     path.join(@getSoldatDirectory(), '.recrue')
 
   getResourcePath: (callback) ->
+
     if process.env.SOLDAT_RESOURCE_PATH
       return process.nextTick -> callback(process.env.SOLDAT_RESOURCE_PATH)
 
     recrueFolder = path.resolve(__dirname, '..')
     appFolder = path.dirname(recrueFolder)
+
     if path.basename(recrueFolder) is 'recrue' and path.basename(appFolder) is 'app'
       asarPath = "#{appFolder}.asar"
       if fs.existsSync(asarPath)
@@ -40,7 +42,7 @@ module.exports =
 
     switch process.platform
       when 'darwin'
-        child_process.exec 'mdfind "kMDItemCFBundleIdentifier == \'com.github.soldat\'"', (error, stdout='', stderr) ->
+        child_process.exec 'mdfind "kMDItemCFBundleIdentifier == \'tv.soldat.soldat\'"', (error, stdout='', stderr) ->
           [appLocation] = stdout.split('\n') unless error
           appLocation = '/Applications/Soldat.app' unless appLocation
           callback("#{appLocation}/Contents/Resources/app.asar")
