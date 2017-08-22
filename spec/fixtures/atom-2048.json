@@ -3,7 +3,7 @@
   "releases": {
     "latest": "1.2.3"
   },
-  "name": "atom-2048",
+  "name": "soldat-2048",
   "versions": {
     "1.2.3": {
       "dist": {

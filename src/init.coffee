@@ -112,7 +112,7 @@ class Init extends Command
 
   generateFromTemplate: (packagePath, templatePath, packageName) ->
     packageName ?= path.basename(packagePath)
-    packageAuthor = process.env.GITHUB_USER or 'atom'
+    packageAuthor = process.env.GITHUB_USER or 'soldat'
 
     fs.makeTreeSync(packagePath)
 

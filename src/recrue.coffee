@@ -8,8 +8,8 @@ module.exports =
   getHomeDirectory: ->
     if process.platform is 'win32' then process.env.USERPROFILE else process.env.HOME
 
-  getAtomDirectory: ->
-    process.env.ATOM_HOME ? path.join(@getHomeDirectory(), '.atom')
+  getSoldatDirectory: ->
+    process.env.SOLDAT_HOME ? path.join(@getHomeDirectory(), '.soldat')
 
   getRustupHomeDirPath: ->
     if process.env.RUSTUP_HOME
@@ -18,11 +18,11 @@ module.exports =
       path.join(@getHomeDirectory(), '.multirust')
 
   getCacheDirectory: ->
-    path.join(@getAtomDirectory(), '.recrue')
+    path.join(@getSoldatDirectory(), '.recrue')
 
   getResourcePath: (callback) ->
-    if process.env.ATOM_RESOURCE_PATH
-      return process.nextTick -> callback(process.env.ATOM_RESOURCE_PATH)
+    if process.env.SOLDAT_RESOURCE_PATH
+      return process.nextTick -> callback(process.env.SOLDAT_RESOURCE_PATH)
 
     recrueFolder = path.resolve(__dirname, '..')
     appFolder = path.dirname(recrueFolder)
@@ -40,38 +40,38 @@ module.exports =
 
     switch process.platform
       when 'darwin'
-        child_process.exec 'mdfind "kMDItemCFBundleIdentifier == \'com.github.atom\'"', (error, stdout='', stderr) ->
+        child_process.exec 'mdfind "kMDItemCFBundleIdentifier == \'com.github.soldat\'"', (error, stdout='', stderr) ->
           [appLocation] = stdout.split('\n') unless error
-          appLocation = '/Applications/Atom.app' unless appLocation
+          appLocation = '/Applications/Soldat.app' unless appLocation
           callback("#{appLocation}/Contents/Resources/app.asar")
       when 'linux'
-        appLocation = '/usr/local/share/atom/resources/app.asar'
+        appLocation = '/usr/local/share/soldat/resources/app.asar'
         unless fs.existsSync(appLocation)
-          appLocation = '/usr/share/atom/resources/app.asar'
+          appLocation = '/usr/share/soldat/resources/app.asar'
         process.nextTick -> callback(appLocation)
 
   getReposDirectory: ->
-    process.env.ATOM_REPOS_HOME ? path.join(@getHomeDirectory(), 'github')
+    process.env.SOLDAT_REPOS_HOME ? path.join(@getHomeDirectory(), 'github')
 
   getElectronUrl: ->
-    process.env.ATOM_ELECTRON_URL ? 'https://atom.io/download/electron'
+    process.env.SOLDAT_ELECTRON_URL ? 'https://soldat.tv/download/electron'
 
-  getAtomPackagesUrl: ->
-    process.env.ATOM_PACKAGES_URL ? "#{@getAtomApiUrl()}/packages"
+  getSoldatPackagesUrl: ->
+    process.env.SOLDAT_PACKAGES_URL ? "#{@getSoldatApiUrl()}/packages"
 
-  getAtomApiUrl: ->
-    process.env.ATOM_API_URL ? 'https://atom.io/api'
+  getSoldatApiUrl: ->
+    process.env.SOLDAT_API_URL ? 'https://soldat.tv/api'
 
   getElectronArch: ->
     switch process.platform
       when 'darwin' then 'x64'
-      else process.env.ATOM_ARCH ? process.arch
+      else process.env.SOLDAT_ARCH ? process.arch
 
   getUserConfigPath: ->
-    path.resolve(@getAtomDirectory(), '.recruerc')
+    path.resolve(@getSoldatDirectory(), '.recruerc')
 
   getGlobalConfigPath: ->
-    path.resolve(@getAtomDirectory(), '.recrue', '.recruerc')
+    path.resolve(@getSoldatDirectory(), '.recrue', '.recruerc')
 
   isWin32: ->
     process.platform is 'win32'
@@ -108,7 +108,7 @@ module.exports =
         ; This file is auto-generated and should not be edited since any
         ; modifications will be lost the next time any recrue command is run.
         ;
-        ; You should instead edit your .recruerc config located in ~/.atom/.recruerc
+        ; You should instead edit your .recruerc config located in ~/.soldat/.recruerc
         cache = #{@getCacheDirectory()}
         ; Hide progress-bar to prevent npm from altering recrue console output.
         progress = false

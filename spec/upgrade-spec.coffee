@@ -13,14 +13,14 @@ recrueRun = (args, callback) ->
   runs callback
 
 describe "recrue upgrade", ->
-  [atomApp, atomHome, packagesDir, server] = []
+  [soldatApp, soldatHome, packagesDir, server] = []
 
   beforeEach ->
     spyOnToken()
     silenceOutput()
 
-    atomHome = temp.mkdirSync('recrue-home-dir-')
-    process.env.ATOM_HOME = atomHome
+    soldatHome = temp.mkdirSync('recrue-home-dir-')
+    process.env.SOLDAT_HOME = soldatHome
 
     app = express()
     app.get '/packages/test-module', (request, response) ->
@@ -32,16 +32,16 @@ describe "recrue upgrade", ->
     server =  http.createServer(app)
     server.listen(3000)
 
-    atomHome = temp.mkdirSync('recrue-home-dir-')
-    atomApp = temp.mkdirSync('recrue-app-dir-')
-    packagesDir = path.join(atomHome, 'packages')
-    process.env.ATOM_HOME = atomHome
-    process.env.ATOM_ELECTRON_URL = "http://localhost:3000/node"
-    process.env.ATOM_PACKAGES_URL = "http://localhost:3000/packages"
-    process.env.ATOM_ELECTRON_VERSION = 'v0.10.3'
-    process.env.ATOM_RESOURCE_PATH = atomApp
+    soldatHome = temp.mkdirSync('recrue-home-dir-')
+    soldatApp = temp.mkdirSync('recrue-app-dir-')
+    packagesDir = path.join(soldatHome, 'packages')
+    process.env.SOLDAT_HOME = soldatHome
+    process.env.SOLDAT_ELECTRON_URL = "http://localhost:3000/node"
+    process.env.SOLDAT_PACKAGES_URL = "http://localhost:3000/packages"
+    process.env.SOLDAT_ELECTRON_VERSION = 'v0.10.3'
+    process.env.SOLDAT_RESOURCE_PATH = soldatApp
 
-    fs.writeFileSync(path.join(atomApp, 'package.json'), JSON.stringify(version: '0.10.0'))
+    fs.writeFileSync(path.join(soldatApp, 'package.json'), JSON.stringify(version: '0.10.0'))
 
   afterEach ->
     server.close()
@@ -59,7 +59,7 @@ describe "recrue upgrade", ->
       expect(console.log).toHaveBeenCalled()
       expect(console.log.argsForCall[1][0]).toContain 'empty'
 
-  it "does not display updates for packages whose engine does not satisfy the installed Atom version", ->
+  it "does not display updates for packages whose engine does not satisfy the installed Soldat version", ->
     fs.writeFileSync(path.join(packagesDir, 'test-module', 'package.json'), JSON.stringify({name: 'test-module', version: '0.3.0', repository: 'https://github.com/a/b'}))
 
     callback = jasmine.createSpy('callback')
@@ -72,7 +72,7 @@ describe "recrue upgrade", ->
       expect(console.log).toHaveBeenCalled()
       expect(console.log.argsForCall[1][0]).toContain 'empty'
 
-  it "displays the latest update that satisfies the installed Atom version", ->
+  it "displays the latest update that satisfies the installed Soldat version", ->
     fs.writeFileSync(path.join(packagesDir, 'multi-module', 'package.json'), JSON.stringify({name: 'multi-module', version: '0.1.0', repository: 'https://github.com/a/b'}))
 
     callback = jasmine.createSpy('callback')
@@ -140,8 +140,8 @@ describe "recrue upgrade", ->
       expect(console.log).toHaveBeenCalled()
       expect(console.log.argsForCall[1][0]).toContain 'empty'
 
-  it "logs an error when the installed location of Atom cannot be found", ->
-    process.env.ATOM_RESOURCE_PATH = '/tmp/atom/is/not/installed/here'
+  it "logs an error when the installed location of Soldat cannot be found", ->
+    process.env.SOLDAT_RESOURCE_PATH = '/tmp/soldat/is/not/installed/here'
     callback = jasmine.createSpy('callback')
     recrue.run(['upgrade', '--list', '--no-color'], callback)
 
@@ -150,10 +150,10 @@ describe "recrue upgrade", ->
 
     runs ->
       expect(console.error).toHaveBeenCalled()
-      expect(console.error.argsForCall[0][0]).toContain 'Could not determine current Atom version installed'
+      expect(console.error.argsForCall[0][0]).toContain 'Could not determine current Soldat version installed'
 
   it "ignores the commit SHA suffix in the version", ->
-    fs.writeFileSync(path.join(atomApp, 'package.json'), JSON.stringify(version: '0.10.0-deadbeef'))
+    fs.writeFileSync(path.join(soldatApp, 'package.json'), JSON.stringify(version: '0.10.0-deadbeef'))
     fs.writeFileSync(path.join(packagesDir, 'multi-module', 'package.json'), JSON.stringify({name: 'multi-module', version: '0.1.0', repository: 'https://github.com/a/b'}))
 
     callback = jasmine.createSpy('callback')
@@ -170,15 +170,15 @@ describe "recrue upgrade", ->
     [pkgJsonPath] = []
 
     beforeEach ->
-      delete process.env.ATOM_ELECTRON_URL
-      delete process.env.ATOM_PACKAGES_URL
-      process.env.ATOM_ELECTRON_VERSION = "0.22.0"
+      delete process.env.SOLDAT_ELECTRON_URL
+      delete process.env.SOLDAT_PACKAGES_URL
+      process.env.SOLDAT_ELECTRON_VERSION = "0.22.0"
 
       gitRepo = path.join(__dirname, "fixtures", "test-git-repo.git")
       cloneUrl = "file://#{gitRepo}"
 
       recrueRun ["install", cloneUrl], ->
-        pkgJsonPath = path.join(process.env.ATOM_HOME, 'packages', 'test-git-repo', 'package.json')
+        pkgJsonPath = path.join(process.env.SOLDAT_HOME, 'packages', 'test-git-repo', 'package.json')
         json = JSON.parse(fs.readFileSync(pkgJsonPath), 'utf8')
         json.recrueInstallSource.sha = 'abcdef1234567890'
         fs.writeFileSync pkgJsonPath, JSON.stringify(json)

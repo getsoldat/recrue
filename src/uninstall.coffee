@@ -20,11 +20,11 @@ class Uninstall extends Command
 
       Usage: recrue uninstall <package_name>...
 
-      Delete the installed package(s) from the ~/.atom/packages directory.
+      Delete the installed package(s) from the ~/.soldat/packages directory.
     """
     options.alias('h', 'help').describe('help', 'Print this usage message')
-    options.alias('d', 'dev').boolean('dev').describe('dev', 'Uninstall from ~/.atom/dev/packages')
-    options.boolean('hard').describe('hard', 'Uninstall from ~/.atom/packages and ~/.atom/dev/packages')
+    options.alias('d', 'dev').boolean('dev').describe('dev', 'Uninstall from ~/.soldat/dev/packages')
+    options.boolean('hard').describe('hard', 'Uninstall from ~/.soldat/packages and ~/.soldat/dev/packages')
 
   getPackageVersion: (packageDirectory) ->
     try
@@ -39,7 +39,7 @@ class Uninstall extends Command
       return callback() unless token
 
       requestOptions =
-        url: "#{config.getAtomPackagesUrl()}/#{packageName}/versions/#{packageVersion}/events/uninstall"
+        url: "#{config.getSoldatPackagesUrl()}/#{packageName}/versions/#{packageVersion}/events/uninstall"
         json: true
         headers:
           authorization: token
@@ -55,8 +55,8 @@ class Uninstall extends Command
       callback("Please specify a package name to uninstall")
       return
 
-    packagesDirectory = path.join(config.getAtomDirectory(), 'packages')
-    devPackagesDirectory = path.join(config.getAtomDirectory(), 'dev', 'packages')
+    packagesDirectory = path.join(config.getSoldatDirectory(), 'packages')
+    devPackagesDirectory = path.join(config.getSoldatDirectory(), 'dev', 'packages')
 
     uninstallsToRegister = []
     uninstallError = null

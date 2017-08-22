@@ -16,10 +16,10 @@ describe 'recrue publish', ->
     server =  http.createServer(app)
     server.listen(3000)
 
-    atomHome = temp.mkdirSync('recrue-home-dir-')
-    process.env.ATOM_HOME = atomHome
-    process.env.ATOM_API_URL = "http://localhost:3000/api"
-    process.env.ATOM_RESOURCE_PATH = temp.mkdirSync('atom-resource-path-')
+    soldatHome = temp.mkdirSync('recrue-home-dir-')
+    process.env.SOLDAT_HOME = soldatHome
+    process.env.SOLDAT_API_URL = "http://localhost:3000/api"
+    process.env.SOLDAT_RESOURCE_PATH = temp.mkdirSync('soldat-resource-path-')
 
   afterEach ->
     server.close()
@@ -53,13 +53,13 @@ describe 'recrue publish', ->
     runs ->
       expect(callback.mostRecentCall.args[0].message).toBe 'Package must be in a Git repository before publishing: https://help.github.com/articles/create-a-repo'
 
-  it "validates the engines.atom range in the package.json file", ->
+  it "validates the engines.soldat range in the package.json file", ->
     packageToPublish = temp.mkdirSync('recrue-test-package-')
     metadata =
       name: 'test'
       version: '1.0.0'
       engines:
-        atom: '><>'
+        soldat: '><>'
     fs.writeFileSync(path.join(packageToPublish, 'package.json'), JSON.stringify(metadata))
     process.chdir(packageToPublish)
     callback = jasmine.createSpy('callback')
@@ -69,7 +69,7 @@ describe 'recrue publish', ->
       callback.callCount is 1
 
     runs ->
-      expect(callback.mostRecentCall.args[0].message).toBe 'The Atom engine range in the package.json file is invalid: ><>'
+      expect(callback.mostRecentCall.args[0].message).toBe 'The Soldat engine range in the package.json file is invalid: ><>'
 
   it "validates the dependency semver ranges in the package.json file", ->
     packageToPublish = temp.mkdirSync('recrue-test-package-')
@@ -77,7 +77,7 @@ describe 'recrue publish', ->
       name: 'test'
       version: '1.0.0'
       engines:
-        atom: '1'
+        soldat: '1'
       dependencies:
         abc: 'git://github.com/user/project.git'
         abcd: 'latest'
@@ -99,7 +99,7 @@ describe 'recrue publish', ->
       name: 'test'
       version: '1.0.0'
       engines:
-        atom: '1'
+        soldat: '1'
       dependencies:
         foo: '^5'
       devDependencies:

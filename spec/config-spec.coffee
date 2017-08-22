@@ -4,15 +4,15 @@ temp = require 'temp'
 recrue = require '../lib/recrue-cli'
 
 describe "recrue config", ->
-  [atomHome, userConfigPath] = []
+  [soldatHome, userConfigPath] = []
 
   beforeEach ->
     spyOnToken()
     silenceOutput()
 
-    atomHome = temp.mkdirSync('recrue-home-dir-')
-    process.env.ATOM_HOME = atomHome
-    userConfigPath = path.join(atomHome, '.recruerc')
+    soldatHome = temp.mkdirSync('recrue-home-dir-')
+    process.env.SOLDAT_HOME = soldatHome
+    userConfigPath = path.join(soldatHome, '.recruerc')
 
     # Make sure the cache used is the one for the test env
     delete process.env.npm_config_cache
@@ -26,7 +26,7 @@ describe "recrue config", ->
         callback.callCount is 1
 
       runs ->
-        expect(process.stdout.write.argsForCall[0][0].trim()).toBe path.join(process.env.ATOM_HOME, '.recrue')
+        expect(process.stdout.write.argsForCall[0][0].trim()).toBe path.join(process.env.SOLDAT_HOME, '.recrue')
 
   describe "recrue config set", ->
     it "sets the value in the user config", ->

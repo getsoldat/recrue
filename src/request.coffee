@@ -14,7 +14,7 @@ configureRequest = (requestOptions, callback) ->
     requestOptions.proxy ?= npm.config.get('https-proxy') or npm.config.get('proxy') or process.env.HTTPS_PROXY or process.env.HTTP_PROXY
     requestOptions.strictSSL ?= npm.config.get('strict-ssl')
 
-    userAgent = npm.config.get('user-agent') ? "AtomApm/#{require('../package.json').version}"
+    userAgent = npm.config.get('user-agent') ? "SoldatApm/#{require('../package.json').version}"
     requestOptions.headers ?= {}
     requestOptions.headers['User-Agent'] ?= userAgent
     callback()
@@ -51,7 +51,7 @@ module.exports =
 
   getErrorMessage: (response, body) ->
     if response?.statusCode is 503
-      'atom.io is temporarily unavailable, please try again later.'
+      'soldat.tv is temporarily unavailable, please try again later.'
     else
       body?.message ? body?.error ? body
 

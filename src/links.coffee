@@ -12,8 +12,8 @@ class Links extends Command
   @commandNames: ['linked', 'links', 'lns']
 
   constructor: ->
-    @devPackagesPath = path.join(config.getAtomDirectory(), 'dev', 'packages')
-    @packagesPath = path.join(config.getAtomDirectory(), 'packages')
+    @devPackagesPath = path.join(config.getSoldatDirectory(), 'dev', 'packages')
+    @packagesPath = path.join(config.getSoldatDirectory(), 'packages')
 
   parseOptions: (argv) ->
     options = yargs(argv).wrap(100)
@@ -21,8 +21,8 @@ class Links extends Command
 
       Usage: recrue links
 
-      List all of the symlinked atom packages in ~/.atom/packages and
-      ~/.atom/dev/packages.
+      List all of the symlinked soldat packages in ~/.soldat/packages and
+      ~/.soldat/dev/packages.
     """
     options.alias('h', 'help').describe('help', 'Print this usage message')
 

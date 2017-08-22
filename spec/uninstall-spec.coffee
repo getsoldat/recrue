@@ -7,7 +7,7 @@ describe 'recrue uninstall', ->
   beforeEach ->
     silenceOutput()
     spyOnToken()
-    process.env.ATOM_API_URL = 'http://localhost:5432'
+    process.env.SOLDAT_API_URL = 'http://localhost:5432'
 
   describe 'when no package is specified', ->
     it 'logs an error and exits', ->
@@ -34,11 +34,11 @@ describe 'recrue uninstall', ->
 
   describe 'when the package is installed', ->
     it 'deletes the package', ->
-      atomHome = temp.mkdirSync('recrue-home-dir-')
-      packagePath = path.join(atomHome, 'packages', 'test-package')
+      soldatHome = temp.mkdirSync('recrue-home-dir-')
+      packagePath = path.join(soldatHome, 'packages', 'test-package')
       fs.makeTreeSync(path.join(packagePath, 'lib'))
       fs.writeFileSync(path.join(packagePath, 'package.json'), "{}")
-      process.env.ATOM_HOME = atomHome
+      process.env.SOLDAT_HOME = soldatHome
 
       expect(fs.existsSync(packagePath)).toBeTruthy()
       callback = jasmine.createSpy('callback')
@@ -52,14 +52,14 @@ describe 'recrue uninstall', ->
 
     describe "--dev", ->
       it "deletes the packages from the dev packages folder", ->
-        atomHome = temp.mkdirSync('recrue-home-dir-')
-        packagePath = path.join(atomHome, 'packages', 'test-package')
+        soldatHome = temp.mkdirSync('recrue-home-dir-')
+        packagePath = path.join(soldatHome, 'packages', 'test-package')
         fs.makeTreeSync(path.join(packagePath, 'lib'))
         fs.writeFileSync(path.join(packagePath, 'package.json'), "{}")
-        devPackagePath = path.join(atomHome, 'dev', 'packages', 'test-package')
+        devPackagePath = path.join(soldatHome, 'dev', 'packages', 'test-package')
         fs.makeTreeSync(path.join(devPackagePath, 'lib'))
         fs.writeFileSync(path.join(devPackagePath, 'package.json'), "{}")
-        process.env.ATOM_HOME = atomHome
+        process.env.SOLDAT_HOME = soldatHome
 
         expect(fs.existsSync(packagePath)).toBeTruthy()
         callback = jasmine.createSpy('callback')
@@ -74,14 +74,14 @@ describe 'recrue uninstall', ->
 
     describe "--hard", ->
       it "deletes the packages from the both packages folders", ->
-        atomHome = temp.mkdirSync('recrue-home-dir-')
-        packagePath = path.join(atomHome, 'packages', 'test-package')
+        soldatHome = temp.mkdirSync('recrue-home-dir-')
+        packagePath = path.join(soldatHome, 'packages', 'test-package')
         fs.makeTreeSync(path.join(packagePath, 'lib'))
         fs.writeFileSync(path.join(packagePath, 'package.json'), "{}")
-        devPackagePath = path.join(atomHome, 'dev', 'packages', 'test-package')
+        devPackagePath = path.join(soldatHome, 'dev', 'packages', 'test-package')
         fs.makeTreeSync(path.join(devPackagePath, 'lib'))
         fs.writeFileSync(path.join(devPackagePath, 'package.json'), "{}")
-        process.env.ATOM_HOME = atomHome
+        process.env.SOLDAT_HOME = soldatHome
 
         expect(fs.existsSync(packagePath)).toBeTruthy()
         callback = jasmine.createSpy('callback')

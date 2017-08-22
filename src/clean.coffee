@@ -14,7 +14,7 @@ class Clean extends Command
   @commandNames: ['clean']
 
   constructor: ->
-    @atomNpmPath = require.resolve('npm/bin/npm-cli')
+    @soldatNpmPath = require.resolve('npm/bin/npm-cli')
 
   getDependencies: (modulePath, allDependencies) ->
     try
@@ -40,7 +40,7 @@ class Clean extends Command
     modulesToRemove = []
     modulesPath = path.resolve('node_modules')
     installedModules = fs.list(modulesPath).filter (modulePath) ->
-      modulePath isnt '.bin' and modulePath isnt 'atom-package-manager'
+      modulePath isnt '.bin' and modulePath isnt 'soldat-package-manager'
 
     # Find all dependencies of all installed modules recursively
     for installedModule in installedModules
@@ -68,7 +68,7 @@ class Clean extends Command
 
   removeModule: (module, callback) ->
     process.stdout.write("Removing #{module} ")
-    @fork @atomNpmPath, ['uninstall', module], (args...) =>
+    @fork @soldatNpmPath, ['uninstall', module], (args...) =>
       @logCommandResults(callback, args...)
 
   run: (options) ->

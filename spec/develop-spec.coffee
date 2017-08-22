@@ -10,14 +10,14 @@ describe "recrue develop", ->
     silenceOutput()
     spyOnToken()
 
-    atomHome = temp.mkdirSync('recrue-home-dir-')
-    process.env.ATOM_HOME = atomHome
+    soldatHome = temp.mkdirSync('recrue-home-dir-')
+    process.env.SOLDAT_HOME = soldatHome
 
-    atomReposHome = temp.mkdirSync('recrue-repos-home-dir-')
-    process.env.ATOM_REPOS_HOME = atomReposHome
+    soldatReposHome = temp.mkdirSync('recrue-repos-home-dir-')
+    process.env.SOLDAT_REPOS_HOME = soldatReposHome
 
-    repoPath = path.join(atomReposHome, 'fake-package')
-    linkedRepoPath = path.join(atomHome, 'dev', 'packages', 'fake-package')
+    repoPath = path.join(soldatReposHome, 'fake-package')
+    linkedRepoPath = path.join(soldatHome, 'dev', 'packages', 'fake-package')
 
   describe "when the package doesn't have a published repository url", ->
     it "logs an error", ->
@@ -37,7 +37,7 @@ describe "recrue develop", ->
         expect(fs.existsSync(linkedRepoPath)).toBeFalsy()
 
   describe "when the repository hasn't been cloned", ->
-    it "clones the repository to ATOM_REPOS_HOME and links it to ATOM_HOME/dev/packages", ->
+    it "clones the repository to SOLDAT_REPOS_HOME and links it to SOLDAT_HOME/dev/packages", ->
       Develop = require '../lib/develop'
       spyOn(Develop.prototype, "getRepositoryUrl").andCallFake (packageName, callback) ->
         repoUrl = path.join(__dirname, 'fixtures', 'repo.git')
@@ -59,7 +59,7 @@ describe "recrue develop", ->
         expect(fs.realpathSync(linkedRepoPath)).toBe fs.realpathSync(repoPath)
 
   describe "when the repository has already been cloned", ->
-    it "links it to ATOM_HOME/dev/packages", ->
+    it "links it to SOLDAT_HOME/dev/packages", ->
       fs.makeTreeSync(repoPath)
       fs.writeFileSync(path.join(repoPath, "package.json"), "")
       callback = jasmine.createSpy('callback')

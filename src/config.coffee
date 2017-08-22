@@ -9,9 +9,9 @@ class Config extends Command
   @commandNames: ['config']
 
   constructor: ->
-    atomDirectory = recrue.getAtomDirectory()
-    @atomNodeDirectory = path.join(atomDirectory, '.node-gyp')
-    @atomNpmPath = require.resolve('npm/bin/npm-cli')
+    soldatDirectory = recrue.getSoldatDirectory()
+    @soldatNodeDirectory = path.join(soldatDirectory, '.node-gyp')
+    @soldatNpmPath = require.resolve('npm/bin/npm-cli')
 
   parseOptions: (argv) ->
     options = yargs(argv).wrap(100)
@@ -33,10 +33,10 @@ class Config extends Command
     configArgs = ['--globalconfig', recrue.getGlobalConfigPath(), '--userconfig', recrue.getUserConfigPath(), 'config']
     configArgs = configArgs.concat(options.argv._)
 
-    env = _.extend({}, process.env, {HOME: @atomNodeDirectory, RUSTUP_HOME: recrue.getRustupHomeDirPath()})
+    env = _.extend({}, process.env, {HOME: @soldatNodeDirectory, RUSTUP_HOME: recrue.getRustupHomeDirPath()})
     configOptions = {env}
 
-    @fork @atomNpmPath, configArgs, configOptions, (code, stderr='', stdout='') ->
+    @fork @soldatNpmPath, configArgs, configOptions, (code, stderr='', stdout='') ->
       if code is 0
         process.stdout.write(stdout) if stdout
         callback()

@@ -9,9 +9,9 @@ describe 'recrue link/unlink', ->
     spyOnToken()
 
   describe "when the dev flag is false (the default)", ->
-    it 'symlinks packages to $ATOM_HOME/packages', ->
-      atomHome = temp.mkdirSync('recrue-home-dir-')
-      process.env.ATOM_HOME = atomHome
+    it 'symlinks packages to $SOLDAT_HOME/packages', ->
+      soldatHome = temp.mkdirSync('recrue-home-dir-')
+      process.env.SOLDAT_HOME = soldatHome
       packageToLink = temp.mkdirSync('a-package-')
       process.chdir(packageToLink)
       callback = jasmine.createSpy('callback')
@@ -23,8 +23,8 @@ describe 'recrue link/unlink', ->
         callback.callCount > 0
 
       runs ->
-        expect(fs.existsSync(path.join(atomHome, 'packages', path.basename(packageToLink)))).toBeTruthy()
-        expect(fs.realpathSync(path.join(atomHome, 'packages', path.basename(packageToLink)))).toBe fs.realpathSync(packageToLink)
+        expect(fs.existsSync(path.join(soldatHome, 'packages', path.basename(packageToLink)))).toBeTruthy()
+        expect(fs.realpathSync(path.join(soldatHome, 'packages', path.basename(packageToLink)))).toBe fs.realpathSync(packageToLink)
 
         callback.reset()
         recrue.run(['unlink'], callback)
@@ -33,12 +33,12 @@ describe 'recrue link/unlink', ->
         callback.callCount > 0
 
       runs ->
-        expect(fs.existsSync(path.join(atomHome, 'packages', path.basename(packageToLink)))).toBeFalsy()
+        expect(fs.existsSync(path.join(soldatHome, 'packages', path.basename(packageToLink)))).toBeFalsy()
 
   describe "when the dev flag is true", ->
-    it 'symlinks packages to $ATOM_HOME/dev/packages', ->
-      atomHome = temp.mkdirSync('recrue-home-dir-')
-      process.env.ATOM_HOME = atomHome
+    it 'symlinks packages to $SOLDAT_HOME/dev/packages', ->
+      soldatHome = temp.mkdirSync('recrue-home-dir-')
+      process.env.SOLDAT_HOME = soldatHome
       packageToLink = temp.mkdirSync('a-package-')
       process.chdir(packageToLink)
       callback = jasmine.createSpy('callback')
@@ -50,8 +50,8 @@ describe 'recrue link/unlink', ->
         callback.callCount > 0
 
       runs ->
-        expect(fs.existsSync(path.join(atomHome, 'dev', 'packages', path.basename(packageToLink)))).toBeTruthy()
-        expect(fs.realpathSync(path.join(atomHome, 'dev', 'packages', path.basename(packageToLink)))).toBe fs.realpathSync(packageToLink)
+        expect(fs.existsSync(path.join(soldatHome, 'dev', 'packages', path.basename(packageToLink)))).toBeTruthy()
+        expect(fs.realpathSync(path.join(soldatHome, 'dev', 'packages', path.basename(packageToLink)))).toBe fs.realpathSync(packageToLink)
 
         callback.reset()
         recrue.run(['unlink', '--dev'], callback)
@@ -60,12 +60,12 @@ describe 'recrue link/unlink', ->
         callback.callCount > 0
 
       runs ->
-        expect(fs.existsSync(path.join(atomHome, 'dev', 'packages', path.basename(packageToLink)))).toBeFalsy()
+        expect(fs.existsSync(path.join(soldatHome, 'dev', 'packages', path.basename(packageToLink)))).toBeFalsy()
 
   describe "when the hard flag is true", ->
-    it "unlinks the package from both $ATOM_HOME/packages and $ATOM_HOME/dev/packages", ->
-      atomHome = temp.mkdirSync('recrue-home-dir-')
-      process.env.ATOM_HOME = atomHome
+    it "unlinks the package from both $SOLDAT_HOME/packages and $SOLDAT_HOME/dev/packages", ->
+      soldatHome = temp.mkdirSync('recrue-home-dir-')
+      process.env.SOLDAT_HOME = soldatHome
       packageToLink = temp.mkdirSync('a-package-')
       process.chdir(packageToLink)
       callback = jasmine.createSpy('callback')
@@ -89,13 +89,13 @@ describe 'recrue link/unlink', ->
         callback.callCount is 3
 
       runs ->
-        expect(fs.existsSync(path.join(atomHome, 'dev', 'packages', path.basename(packageToLink)))).toBeFalsy()
-        expect(fs.existsSync(path.join(atomHome, 'packages', path.basename(packageToLink)))).toBeFalsy()
+        expect(fs.existsSync(path.join(soldatHome, 'dev', 'packages', path.basename(packageToLink)))).toBeFalsy()
+        expect(fs.existsSync(path.join(soldatHome, 'packages', path.basename(packageToLink)))).toBeFalsy()
 
   describe "when the all flag is true", ->
-    it "unlinks all packages in $ATOM_HOME/packages and $ATOM_HOME/dev/packages", ->
-      atomHome = temp.mkdirSync('recrue-home-dir-')
-      process.env.ATOM_HOME = atomHome
+    it "unlinks all packages in $SOLDAT_HOME/packages and $SOLDAT_HOME/dev/packages", ->
+      soldatHome = temp.mkdirSync('recrue-home-dir-')
+      process.env.SOLDAT_HOME = soldatHome
       packageToLink1 = temp.mkdirSync('a-package-')
       packageToLink2 = temp.mkdirSync('a-package-')
       packageToLink3 = temp.mkdirSync('a-package-')
@@ -117,23 +117,23 @@ describe 'recrue link/unlink', ->
 
       runs ->
         callback.reset()
-        expect(fs.existsSync(path.join(atomHome, 'dev', 'packages', path.basename(packageToLink1)))).toBeTruthy()
-        expect(fs.existsSync(path.join(atomHome, 'packages', path.basename(packageToLink2)))).toBeTruthy()
-        expect(fs.existsSync(path.join(atomHome, 'packages', path.basename(packageToLink3)))).toBeTruthy()
+        expect(fs.existsSync(path.join(soldatHome, 'dev', 'packages', path.basename(packageToLink1)))).toBeTruthy()
+        expect(fs.existsSync(path.join(soldatHome, 'packages', path.basename(packageToLink2)))).toBeTruthy()
+        expect(fs.existsSync(path.join(soldatHome, 'packages', path.basename(packageToLink3)))).toBeTruthy()
         recrue.run(['unlink', '--all'], callback)
 
       waitsFor 'unlink --all to complete', ->
         callback.callCount is 1
 
       runs ->
-        expect(fs.existsSync(path.join(atomHome, 'dev', 'packages', path.basename(packageToLink1)))).toBeFalsy()
-        expect(fs.existsSync(path.join(atomHome, 'packages', path.basename(packageToLink2)))).toBeFalsy()
-        expect(fs.existsSync(path.join(atomHome, 'packages', path.basename(packageToLink3)))).toBeFalsy()
+        expect(fs.existsSync(path.join(soldatHome, 'dev', 'packages', path.basename(packageToLink1)))).toBeFalsy()
+        expect(fs.existsSync(path.join(soldatHome, 'packages', path.basename(packageToLink2)))).toBeFalsy()
+        expect(fs.existsSync(path.join(soldatHome, 'packages', path.basename(packageToLink3)))).toBeFalsy()
 
   describe "when the package name is numeric", ->
     it "still links and unlinks normally", ->
-      atomHome = temp.mkdirSync('recrue-home-dir-')
-      process.env.ATOM_HOME = atomHome
+      soldatHome = temp.mkdirSync('recrue-home-dir-')
+      process.env.SOLDAT_HOME = soldatHome
       numericPackageName = temp.mkdirSync('42')
       callback = jasmine.createSpy('callback')
 
@@ -144,8 +144,8 @@ describe 'recrue link/unlink', ->
         callback.callCount is 1
 
       runs ->
-        expect(fs.existsSync(path.join(atomHome, 'packages', path.basename(numericPackageName)))).toBeTruthy()
-        expect(fs.realpathSync(path.join(atomHome, 'packages', path.basename(numericPackageName)))).toBe fs.realpathSync(numericPackageName)
+        expect(fs.existsSync(path.join(soldatHome, 'packages', path.basename(numericPackageName)))).toBeTruthy()
+        expect(fs.realpathSync(path.join(soldatHome, 'packages', path.basename(numericPackageName)))).toBe fs.realpathSync(numericPackageName)
 
         callback.reset()
         recrue.run(['unlink', numericPackageName], callback)
@@ -154,4 +154,4 @@ describe 'recrue link/unlink', ->
         callback.callCount is 1
 
       runs ->
-        expect(fs.existsSync(path.join(atomHome, 'packages', path.basename(numericPackageName)))).toBeFalsy()
+        expect(fs.existsSync(path.join(soldatHome, 'packages', path.basename(numericPackageName)))).toBeFalsy()

@@ -17,13 +17,13 @@ class Link extends Command
 
       Usage: recrue link [<package_path>]
 
-      Create a symlink for the package in ~/.atom/packages. The package in the
+      Create a symlink for the package in ~/.soldat/packages. The package in the
       current working directory is linked if no path is given.
 
       Run `recrue links` to view all the currently linked packages.
     """
     options.alias('h', 'help').describe('help', 'Print this usage message')
-    options.alias('d', 'dev').boolean('dev').describe('dev', 'Link to ~/.atom/dev/packages')
+    options.alias('d', 'dev').boolean('dev').describe('dev', 'Link to ~/.soldat/dev/packages')
 
   run: (options) ->
     {callback} = options
@@ -37,9 +37,9 @@ class Link extends Command
     packageName = path.basename(linkPath) unless packageName
 
     if options.argv.dev
-      targetPath = path.join(config.getAtomDirectory(), 'dev', 'packages', packageName)
+      targetPath = path.join(config.getSoldatDirectory(), 'dev', 'packages', packageName)
     else
-      targetPath = path.join(config.getAtomDirectory(), 'packages', packageName)
+      targetPath = path.join(config.getSoldatDirectory(), 'packages', packageName)
 
     unless fs.existsSync(linkPath)
       callback("Package directory does not exist: #{linkPath}")

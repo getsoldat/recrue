@@ -15,8 +15,8 @@ describe "recrue test", ->
     spyOn(process, 'cwd').andReturn(currentDir)
     specPath = path.join(currentDir, 'spec')
 
-  it "calls atom to test", ->
-    atomSpawn = spyOn(child_process, 'spawn').andReturn
+  it "calls soldat to test", ->
+    soldatSpawn = spyOn(child_process, 'spawn').andReturn
       stdout:
         on: ->
       stderr:
@@ -25,32 +25,32 @@ describe "recrue test", ->
     recrue.run(['test'])
 
     waitsFor 'waiting for test to complete', ->
-      atomSpawn.callCount is 1
+      soldatSpawn.callCount is 1
 
     runs ->
       if process.platform is 'win32'
-        expect(atomSpawn.mostRecentCall.args[1][2].indexOf('atom')).not.toBe -1
-        expect(atomSpawn.mostRecentCall.args[1][2].indexOf('--dev')).not.toBe -1
-        expect(atomSpawn.mostRecentCall.args[1][2].indexOf('--test')).not.toBe -1
+        expect(soldatSpawn.mostRecentCall.args[1][2].indexOf('soldat')).not.toBe -1
+        expect(soldatSpawn.mostRecentCall.args[1][2].indexOf('--dev')).not.toBe -1
+        expect(soldatSpawn.mostRecentCall.args[1][2].indexOf('--test')).not.toBe -1
       else
-        expect(atomSpawn.mostRecentCall.args[0]).toEqual 'atom'
-        expect(atomSpawn.mostRecentCall.args[1][0]).toEqual '--dev'
-        expect(atomSpawn.mostRecentCall.args[1][1]).toEqual '--test'
-        expect(atomSpawn.mostRecentCall.args[1][2]).toEqual specPath
-        expect(atomSpawn.mostRecentCall.args[2].streaming).toBeTruthy()
+        expect(soldatSpawn.mostRecentCall.args[0]).toEqual 'soldat'
+        expect(soldatSpawn.mostRecentCall.args[1][0]).toEqual '--dev'
+        expect(soldatSpawn.mostRecentCall.args[1][1]).toEqual '--test'
+        expect(soldatSpawn.mostRecentCall.args[1][2]).toEqual specPath
+        expect(soldatSpawn.mostRecentCall.args[2].streaming).toBeTruthy()
 
   describe 'returning', ->
     [callback] = []
 
     returnWithCode = (type, code) ->
       callback = jasmine.createSpy('callback')
-      atomReturnFn = (e, fn) -> fn(code) if e is type
+      soldatReturnFn = (e, fn) -> fn(code) if e is type
       spyOn(child_process, 'spawn').andReturn
         stdout:
           on: ->
         stderr:
           on: ->
-        on: atomReturnFn
+        on: soldatReturnFn
         removeListener: -> # no op
       recrue.run(['test'], callback)
 

@@ -21,8 +21,8 @@ class Upgrade extends Command
   @commandNames: ['upgrade', 'outdated', 'update']
 
   constructor: ->
-    @atomDirectory = config.getAtomDirectory()
-    @atomPackagesDirectory = path.join(@atomDirectory, 'packages')
+    @soldatDirectory = config.getSoldatDirectory()
+    @soldatPackagesDirectory = path.join(@soldatDirectory, 'packages')
 
   parseOptions: (argv) ->
     options = yargs(argv).wrap(100)
@@ -32,7 +32,7 @@ class Upgrade extends Command
              recrue upgrade --list
              recrue upgrade [<package_name>...]
 
-      Upgrade out of date packages installed to ~/.atom/packages
+      Upgrade out of date packages installed to ~/.soldat/packages
 
       This command lists the out of date packages and then prompts to install
       available updates.
@@ -41,12 +41,12 @@ class Upgrade extends Command
     options.alias('h', 'help').describe('help', 'Print this usage message')
     options.alias('l', 'list').boolean('list').describe('list', 'List but don\'t install the outdated packages')
     options.boolean('json').describe('json', 'Output outdated packages as a JSON array')
-    options.string('compatible').describe('compatible', 'Only list packages/themes compatible with this Atom version')
+    options.string('compatible').describe('compatible', 'Only list packages/themes compatible with this Soldat version')
     options.boolean('verbose').default('verbose', false).describe('verbose', 'Show verbose debug information')
 
   getInstalledPackages: (options) ->
     packages = []
-    for name in fs.list(@atomPackagesDirectory)
+    for name in fs.list(@soldatPackagesDirectory)
       if pack = @getIntalledPackage(name)
         packages.push(pack)
 
@@ -57,24 +57,24 @@ class Upgrade extends Command
     packages
 
   getIntalledPackage: (name) ->
-    packageDirectory = path.join(@atomPackagesDirectory, name)
+    packageDirectory = path.join(@soldatPackagesDirectory, name)
     return if fs.isSymbolicLinkSync(packageDirectory)
     try
       metadata = JSON.parse(fs.readFileSync(path.join(packageDirectory, 'package.json')))
       return metadata if metadata?.name and metadata?.version
 
-  loadInstalledAtomVersion: (options, callback) ->
+  loadInstalledSoldatVersion: (options, callback) ->
     if options.argv.compatible
       process.nextTick =>
         version = @normalizeVersion(options.argv.compatible)
-        @installedAtomVersion = version if semver.valid(version)
+        @installedSoldatVersion = version if semver.valid(version)
         callback()
     else
-      @loadInstalledAtomMetadata(callback)
+      @loadInstalledSoldatMetadata(callback)
 
   getLatestVersion: (pack, callback) ->
     requestSettings =
-      url: "#{config.getAtomPackagesUrl()}/#{pack.name}"
+      url: "#{config.getSoldatPackagesUrl()}/#{pack.name}"
       json: true
     request.get requestSettings, (error, response, body={}) =>
       if error?
@@ -85,15 +85,15 @@ class Upgrade extends Command
         message = body.message ? body.error ? body
         callback("Request for package information failed: #{message}")
       else
-        atomVersion = @installedAtomVersion
+        soldatVersion = @installedSoldatVersion
         latestVersion = pack.version
         for version, metadata of body.versions ? {}
           continue unless semver.valid(version)
           continue unless metadata
 
-          engine = metadata.engines?.atom ? '*'
+          engine = metadata.engines?.soldat ? '*'
           continue unless semver.validRange(engine)
-          continue unless semver.satisfies(atomVersion, engine)
+          continue unless semver.satisfies(soldatVersion, engine)
 
           latestVersion = version if semver.gt(version, latestVersion)
 
@@ -103,7 +103,7 @@ class Upgrade extends Command
           callback()
 
   getLatestSha: (pack, callback) ->
-    repoPath = path.join(@atomPackagesDirectory, pack.name)
+    repoPath = path.join(@soldatPackagesDirectory, pack.name)
     config.getSetting 'git', (command) =>
       command ?= 'git'
       args = ['fetch', 'origin', 'master']
@@ -168,11 +168,11 @@ class Upgrade extends Command
       request.debug(true)
       process.env.NODE_DEBUG = 'request'
 
-    @loadInstalledAtomVersion options, =>
-      if @installedAtomVersion
+    @loadInstalledSoldatVersion options, =>
+      if @installedSoldatVersion
         @upgradePackages(options, callback)
       else
-        callback('Could not determine current Atom version installed')
+        callback('Could not determine current Soldat version installed')
 
   upgradePackages: (options, callback) ->
     packages = @getInstalledPackages(options)

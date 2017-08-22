@@ -19,7 +19,7 @@ describe 'recrue docs', ->
     server =  http.createServer(app)
     server.listen(3000)
 
-    process.env.ATOM_PACKAGES_URL = "http://localhost:3000"
+    process.env.SOLDAT_PACKAGES_URL = "http://localhost:3000"
 
   afterEach ->
     server.close()
@@ -56,7 +56,7 @@ describe 'recrue docs', ->
     runs ->
       expect(Docs::openRepositoryUrl).not.toHaveBeenCalled()
       expect(console.log).toHaveBeenCalled()
-      expect(console.log.argsForCall[0][0]).toContain 'https://github.com/atom/wrap-guide'
+      expect(console.log.argsForCall[0][0]).toContain 'https://github.com/soldat/wrap-guide'
 
   it "prints the package URL if called with the -p short option (and does not open it)", ->
     Docs = require('../lib/docs')
@@ -70,7 +70,7 @@ describe 'recrue docs', ->
     runs ->
       expect(Docs::openRepositoryUrl).not.toHaveBeenCalled()
       expect(console.log).toHaveBeenCalled()
-      expect(console.log.argsForCall[0][0]).toContain 'https://github.com/atom/wrap-guide'
+      expect(console.log.argsForCall[0][0]).toContain 'https://github.com/soldat/wrap-guide'
 
   it "opens the package URL", ->
     spyOn(Docs.prototype, 'openRepositoryUrl')

@@ -9,10 +9,10 @@ catch error
   else
     throw error
 
-tokenName = 'Atom.io API Token'
+tokenName = 'Soldat.tv API Token'
 
 module.exports =
-  # Get the Atom.io API token from the keychain.
+  # Get the Soldat.tv API token from the keychain.
   #
   # callback - A function to call with an error as the first argument and a
   #            string token as the second argument.
@@ -22,17 +22,17 @@ module.exports =
         callback(null, token)
         return
 
-      if token = process.env.ATOM_ACCESS_TOKEN
+      if token = process.env.SOLDAT_ACCESS_TOKEN
         callback(null, token)
         return
 
       callback """
-        No Atom.io API token in keychain
-        Run `recrue login` or set the `ATOM_ACCESS_TOKEN` environment variable.
+        No Soldat.tv API token in keychain
+        Run `recrue login` or set the `SOLDAT_ACCESS_TOKEN` environment variable.
       """
 
   # Save the given token to the keychain.
   #
   # token - A string token to save.
   saveToken: (token) ->
-    keytar.setPassword(tokenName, 'atom.io', token)
+    keytar.setPassword(tokenName, 'soldat.tv', token)

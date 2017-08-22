@@ -12,8 +12,8 @@ class Rebuild extends Command
   @commandNames: ['rebuild']
 
   constructor: ->
-    @atomNodeDirectory = path.join(config.getAtomDirectory(), '.node-gyp')
-    @atomNpmPath = require.resolve('npm/bin/npm-cli')
+    @soldatNodeDirectory = path.join(config.getSoldatDirectory(), '.node-gyp')
+    @soldatNpmPath = require.resolve('npm/bin/npm-cli')
 
   parseOptions: (argv) ->
     options = yargs(argv).wrap(100)
@@ -32,7 +32,7 @@ class Rebuild extends Command
     config.loadNpm (error, npm) ->
       install = new Install()
       install.npm = npm
-      install.loadInstalledAtomMetadata -> install.installNode(callback)
+      install.loadInstalledSoldatMetadata -> install.installNode(callback)
 
   forkNpmRebuild: (options, callback) ->
     process.stdout.write 'Rebuilding modules '
@@ -52,18 +52,18 @@ class Rebuild extends Command
     if vsArgs = @getVisualStudioFlags()
       rebuildArgs.push(vsArgs)
 
-    env = _.extend({}, process.env, {HOME: @atomNodeDirectory, RUSTUP_HOME: config.getRustupHomeDirPath()})
+    env = _.extend({}, process.env, {HOME: @soldatNodeDirectory, RUSTUP_HOME: config.getRustupHomeDirPath()})
     env.USERPROFILE = env.HOME if config.isWin32()
     @addBuildEnvVars(env)
 
-    @fork(@atomNpmPath, rebuildArgs, {env}, callback)
+    @fork(@soldatNpmPath, rebuildArgs, {env}, callback)
 
   run: (options) ->
     {callback} = options
     options = @parseOptions(options.commandArgs)
 
     config.loadNpm (error, @npm) =>
-      @loadInstalledAtomMetadata =>
+      @loadInstalledSoldatMetadata =>
         @installNode (error) =>
           return callback(error) if error?
 

@@ -17,8 +17,8 @@ class Develop extends Command
   @commandNames: ['dev', 'develop']
 
   constructor: ->
-    @atomDirectory = config.getAtomDirectory()
-    @atomDevPackagesDirectory = path.join(@atomDirectory, 'dev', 'packages')
+    @soldatDirectory = config.getSoldatDirectory()
+    @soldatDevPackagesDirectory = path.join(@soldatDirectory, 'dev', 'packages')
 
   parseOptions: (argv) ->
     options = yargs(argv).wrap(100)
@@ -28,20 +28,20 @@ class Develop extends Command
 
       Clone the given package's Git repository to the directory specified,
       install its dependencies, and link it for development to
-      ~/.atom/dev/packages/<package_name>.
+      ~/.soldat/dev/packages/<package_name>.
 
       If no directory is specified then the repository is cloned to
       ~/github/<package_name>. The default folder to clone packages into can
-      be overridden using the ATOM_REPOS_HOME environment variable.
+      be overridden using the SOLDAT_REPOS_HOME environment variable.
 
-      Once this command completes you can open a dev window from atom using
+      Once this command completes you can open a dev window from soldat using
       cmd-shift-o to run the package out of the newly cloned repository.
     """
     options.alias('h', 'help').describe('help', 'Print this usage message')
 
   getRepositoryUrl: (packageName, callback) ->
     requestSettings =
-      url: "#{config.getAtomPackagesUrl()}/#{packageName}"
+      url: "#{config.getSoldatPackagesUrl()}/#{packageName}"
       json: true
     request.get requestSettings, (error, response, body={}) ->
       if error?

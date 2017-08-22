@@ -27,12 +27,12 @@ describe 'recrue rebuild', ->
     server =  http.createServer(app)
     server.listen(3000)
 
-    atomHome = temp.mkdirSync('recrue-home-dir-')
-    process.env.ATOM_HOME = atomHome
-    process.env.ATOM_ELECTRON_URL = "http://localhost:3000/node"
-    process.env.ATOM_PACKAGES_URL = "http://localhost:3000/packages"
-    process.env.ATOM_ELECTRON_VERSION = 'v0.10.3'
-    process.env.ATOM_RESOURCE_PATH = temp.mkdirSync('atom-resource-path-')
+    soldatHome = temp.mkdirSync('recrue-home-dir-')
+    process.env.SOLDAT_HOME = soldatHome
+    process.env.SOLDAT_ELECTRON_URL = "http://localhost:3000/node"
+    process.env.SOLDAT_PACKAGES_URL = "http://localhost:3000/packages"
+    process.env.SOLDAT_ELECTRON_VERSION = 'v0.10.3'
+    process.env.SOLDAT_RESOURCE_PATH = temp.mkdirSync('soldat-resource-path-')
 
     originalPathEnv = process.env.PATH
     process.env.PATH = ""

@@ -4,7 +4,7 @@ fs = require './fs'
 request = require './request'
 TextMateTheme = require './text-mate-theme'
 
-# Convert a TextMate theme to an Atom theme
+# Convert a TextMate theme to an Soldat theme
 module.exports =
 class ThemeConverter
   constructor: (@sourcePath, destinationPath) ->

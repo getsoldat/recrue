@@ -20,7 +20,7 @@ class Unpublish extends Command
       Usage: recrue unpublish [<package_name>]
              recrue unpublish <package_name>@<package_version>
 
-      Remove a published package or package version from the atom.io registry.
+      Remove a published package or package version from the soldat.tv registry.
 
       The package in the current working directory will be used if no package
       name is specified.
@@ -41,7 +41,7 @@ class Unpublish extends Command
         return
 
       options =
-        uri: "#{config.getAtomPackagesUrl()}/#{packageName}"
+        uri: "#{config.getSoldatPackagesUrl()}/#{packageName}"
         headers:
           authorization: token
         json: true

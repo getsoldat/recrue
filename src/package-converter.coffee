@@ -12,7 +12,7 @@ temp = require 'temp'
 fs = require './fs'
 request = require './request'
 
-# Convert a TextMate bundle to an Atom package
+# Convert a TextMate bundle to an Soldat package
 module.exports =
 class PackageConverter
   constructor: (@sourcePath, destinationPath) ->
@@ -46,7 +46,7 @@ class PackageConverter
     downloadUrl += '/archive/master.tar.gz'
 
   downloadBundle: (callback) ->
-    tempPath = temp.mkdirSync('atom-bundle-')
+    tempPath = temp.mkdirSync('soldat-bundle-')
     requestOptions = url: @getDownloadUrl()
     request.createReadStream requestOptions, (readStream) =>
       readStream.on 'response', ({headers, statusCode}) ->

@@ -10,7 +10,7 @@ class RebuildModuleCache extends Command
   @commandNames: ['rebuild-module-cache']
 
   constructor: ->
-    @atomPackagesDirectory = path.join(config.getAtomDirectory(), 'packages')
+    @soldatPackagesDirectory = path.join(config.getSoldatDirectory(), 'packages')
 
   parseOptions: (argv) ->
     options = yargs(argv).wrap(100)
@@ -19,10 +19,10 @@ class RebuildModuleCache extends Command
       Usage: recrue rebuild-module-cache
 
       Rebuild the module cache for all the packages installed to
-      ~/.atom/packages
+      ~/.soldat/packages
 
       You can see the state of the module cache for a package by looking
-      at the _atomModuleCache property in the package's package.json file.
+      at the _soldatModuleCache property in the package's package.json file.
 
       This command skips all linked packages.
     """
@@ -48,8 +48,8 @@ class RebuildModuleCache extends Command
     {callback} = options
 
     commands = []
-    fs.list(@atomPackagesDirectory).forEach (packageName) =>
-      packageDirectory = path.join(@atomPackagesDirectory, packageName)
+    fs.list(@soldatPackagesDirectory).forEach (packageName) =>
+      packageDirectory = path.join(@soldatPackagesDirectory, packageName)
       return if fs.isSymbolicLinkSync(packageDirectory)
       return unless fs.isFileSync(path.join(packageDirectory, 'package.json'))
 

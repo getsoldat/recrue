@@ -17,7 +17,7 @@ class Search extends Command
 
       Usage: recrue search <package_name>
 
-      Search for Atom packages/themes on the atom.io registry.
+      Search for Soldat packages/themes on the soldat.tv registry.
     """
     options.alias('h', 'help').describe('help', 'Print this usage message')
     options.boolean('json').describe('json', 'Output matching packages as JSON array')
@@ -34,7 +34,7 @@ class Search extends Command
       qs.filter = 'theme'
 
     requestSettings =
-      url: "#{config.getAtomPackagesUrl()}/search"
+      url: "#{config.getSoldatPackagesUrl()}/search"
       qs: qs
       json: true
 
@@ -81,7 +81,7 @@ class Search extends Command
           label
 
         console.log()
-        console.log "Use `recrue install` to install them or visit #{'http://atom.io/packages'.underline} to read more about them."
+        console.log "Use `recrue install` to install them or visit #{'http://soldat.tv/packages'.underline} to read more about them."
         console.log()
 
       callback()

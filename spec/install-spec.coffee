@@ -9,22 +9,22 @@ recrue = require '../lib/recrue-cli'
 Install = require '../lib/install'
 
 describe 'recrue install', ->
-  [atomHome, resourcePath] = []
+  [soldatHome, resourcePath] = []
 
   beforeEach ->
     spyOnToken()
     silenceOutput()
 
-    atomHome = temp.mkdirSync('recrue-home-dir-')
-    process.env.ATOM_HOME = atomHome
+    soldatHome = temp.mkdirSync('recrue-home-dir-')
+    process.env.SOLDAT_HOME = soldatHome
 
     # Make sure the cache used is the one for the test env
     delete process.env.npm_config_cache
 
-    resourcePath = temp.mkdirSync('atom-resource-path-')
-    process.env.ATOM_RESOURCE_PATH = resourcePath
+    resourcePath = temp.mkdirSync('soldat-resource-path-')
+    process.env.SOLDAT_RESOURCE_PATH = resourcePath
 
-  describe "when installing an atom package", ->
+  describe "when installing an soldat package", ->
     server = null
 
     beforeEach ->
@@ -55,8 +55,8 @@ describe 'recrue install', ->
         response.sendfile path.join(__dirname, 'fixtures', 'test-module-with-bin-2.0.0.tgz')
       app.get '/packages/multi-module', (request, response) ->
         response.sendfile path.join(__dirname, 'fixtures', 'install-multi-version.json')
-      app.get '/packages/atom-2048', (request, response) ->
-        response.sendfile path.join(__dirname, 'fixtures', 'atom-2048.json')
+      app.get '/packages/soldat-2048', (request, response) ->
+        response.sendfile path.join(__dirname, 'fixtures', 'soldat-2048.json')
       app.get '/packages/native-package', (request, response) ->
         response.sendfile path.join(__dirname, 'fixtures', 'native-package.json')
       app.get '/tarball/native-package-1.0.0.tgz', (request, response) ->
@@ -65,11 +65,11 @@ describe 'recrue install', ->
       server =  http.createServer(app)
       server.listen(3000)
 
-      atomHome = temp.mkdirSync('recrue-home-dir-')
-      process.env.ATOM_HOME = atomHome
-      process.env.ATOM_ELECTRON_URL = "http://localhost:3000/node"
-      process.env.ATOM_PACKAGES_URL = "http://localhost:3000/packages"
-      process.env.ATOM_ELECTRON_VERSION = 'v0.10.3'
+      soldatHome = temp.mkdirSync('recrue-home-dir-')
+      process.env.SOLDAT_HOME = soldatHome
+      process.env.SOLDAT_ELECTRON_URL = "http://localhost:3000/node"
+      process.env.SOLDAT_PACKAGES_URL = "http://localhost:3000/packages"
+      process.env.SOLDAT_ELECTRON_VERSION = 'v0.10.3'
 
     afterEach ->
       server.close()
@@ -88,7 +88,7 @@ describe 'recrue install', ->
 
     describe 'when a package name is specified', ->
       it 'installs the package', ->
-        testModuleDirectory = path.join(atomHome, 'packages', 'test-module')
+        testModuleDirectory = path.join(soldatHome, 'packages', 'test-module')
         fs.makeTreeSync(testModuleDirectory)
         existingTestModuleFile = path.join(testModuleDirectory, 'will-be-deleted.js')
         fs.writeFileSync(existingTestModuleFile, '')
@@ -109,7 +109,7 @@ describe 'recrue install', ->
       describe "when the package is already in the cache", ->
         it "installs it from the cache", ->
           cachePath = path.join(require('../lib/recrue').getCacheDirectory(), 'test-module2', '2.0.0', 'package.tgz')
-          testModuleDirectory = path.join(atomHome, 'packages', 'test-module2')
+          testModuleDirectory = path.join(soldatHome, 'packages', 'test-module2')
 
           callback = jasmine.createSpy('callback')
           recrue.run(['install', "test-module2"], callback)
@@ -138,7 +138,7 @@ describe 'recrue install', ->
       describe 'when multiple releases are available', ->
         it 'installs the latest compatible version', ->
           CSON.writeFileSync(path.join(resourcePath, 'package.json'), version: '1.5.0')
-          packageDirectory = path.join(atomHome, 'packages', 'test-module')
+          packageDirectory = path.join(soldatHome, 'packages', 'test-module')
 
           callback = jasmine.createSpy('callback')
           recrue.run(['install', 'multi-module'], callback)
@@ -152,7 +152,7 @@ describe 'recrue install', ->
 
         it "ignores the commit SHA suffix in the version", ->
           CSON.writeFileSync(path.join(resourcePath, 'package.json'), version: '1.5.0-deadbeef')
-          packageDirectory = path.join(atomHome, 'packages', 'test-module')
+          packageDirectory = path.join(soldatHome, 'packages', 'test-module')
 
           callback = jasmine.createSpy('callback')
           recrue.run(['install', 'multi-module'], callback)
@@ -166,7 +166,7 @@ describe 'recrue install', ->
 
         it 'logs an error when no compatible versions are available', ->
           CSON.writeFileSync(path.join(resourcePath, 'package.json'), version: '0.9.0')
-          packageDirectory = path.join(atomHome, 'packages', 'test-module')
+          packageDirectory = path.join(soldatHome, 'packages', 'test-module')
 
           callback = jasmine.createSpy('callback')
           recrue.run(['install', 'multi-module'], callback)
@@ -180,8 +180,8 @@ describe 'recrue install', ->
 
     describe 'when multiple package names are specified', ->
       it 'installs all packages', ->
-        testModuleDirectory = path.join(atomHome, 'packages', 'test-module')
-        testModule2Directory = path.join(atomHome, 'packages', 'test-module2')
+        testModuleDirectory = path.join(soldatHome, 'packages', 'test-module')
+        testModule2Directory = path.join(soldatHome, 'packages', 'test-module2')
 
         callback = jasmine.createSpy('callback')
         recrue.run(['install', "test-module", "test-module2", "test-module"], callback)
@@ -197,8 +197,8 @@ describe 'recrue install', ->
           expect(callback.mostRecentCall.args[0]).toBeNull()
 
       it "installs them in order and stops on the first failure", ->
-        testModuleDirectory = path.join(atomHome, 'packages', 'test-module')
-        testModule2Directory = path.join(atomHome, 'packages', 'test-module2')
+        testModuleDirectory = path.join(soldatHome, 'packages', 'test-module')
+        testModule2Directory = path.join(soldatHome, 'packages', 'test-module2')
 
         callback = jasmine.createSpy('callback')
         recrue.run(['install', "test-module", "test-module-bad", "test-module2"], callback)
@@ -231,9 +231,9 @@ describe 'recrue install', ->
 
     describe "when the packages directory does not exist", ->
       it "creates the packages directory and any intermediate directories that do not exist", ->
-        atomHome = temp.path('recrue-home-dir-')
-        process.env.ATOM_HOME = atomHome
-        expect(fs.existsSync(atomHome)).toBe false
+        soldatHome = temp.path('recrue-home-dir-')
+        process.env.SOLDAT_HOME = soldatHome
+        expect(fs.existsSync(soldatHome)).toBe false
 
         callback = jasmine.createSpy('callback')
         recrue.run(['install', 'test-module'], callback)
@@ -242,11 +242,11 @@ describe 'recrue install', ->
           callback.callCount is 1
 
         runs ->
-          expect(fs.existsSync(atomHome)).toBe true
+          expect(fs.existsSync(soldatHome)).toBe true
 
     describe "when the package contains symlinks", ->
       it "copies them correctly from the temp directory", ->
-        testModuleDirectory = path.join(atomHome, 'packages', 'test-module-with-symlink')
+        testModuleDirectory = path.join(soldatHome, 'packages', 'test-module-with-symlink')
 
         callback = jasmine.createSpy('callback')
         recrue.run(['install', "test-module-with-symlink"], callback)
@@ -265,7 +265,7 @@ describe 'recrue install', ->
     describe "when the package installs binaries", ->
       # regression: caused by the existence of `.bin` in the install folder
       it "correctly installs the package ignoring any binaries", ->
-        testModuleDirectory = path.join(atomHome, 'packages', 'test-module-with-bin')
+        testModuleDirectory = path.join(soldatHome, 'packages', 'test-module-with-bin')
 
         callback = jasmine.createSpy('callback')
         recrue.run(['install', "test-module-with-bin"], callback)
@@ -279,8 +279,8 @@ describe 'recrue install', ->
 
     describe 'when a packages file is specified', ->
       it 'installs all the packages listed in the file', ->
-        testModuleDirectory = path.join(atomHome, 'packages', 'test-module')
-        testModule2Directory = path.join(atomHome, 'packages', 'test-module2')
+        testModuleDirectory = path.join(soldatHome, 'packages', 'test-module')
+        testModule2Directory = path.join(soldatHome, 'packages', 'test-module2')
         packagesFilePath = path.join(__dirname, 'fixtures', 'packages.txt')
 
         callback = jasmine.createSpy('callback')
@@ -308,7 +308,7 @@ describe 'recrue install', ->
         runs ->
           expect(callback.mostRecentCall.args[0]).not.toBeNull()
 
-    describe 'when the package is bundled with Atom', ->
+    describe 'when the package is bundled with Soldat', ->
       it 'logs a message to standard error', ->
         CSON.writeFileSync(path.join(resourcePath, 'package.json'), packageDependencies: 'test-module': '1.0')
 
@@ -335,7 +335,7 @@ describe 'recrue install', ->
     describe 'when a deprecated package name is specified', ->
       it 'does not install the package', ->
         callback = jasmine.createSpy('callback')
-        recrue.run(['install', "atom-2048"], callback)
+        recrue.run(['install', "soldat-2048"], callback)
 
         waitsFor 'waiting for install to complete', 600000, ->
           callback.callCount is 1
@@ -400,9 +400,9 @@ describe 'recrue install', ->
           count is 1
 
         runs ->
-          pkgJsonPath = path.join(process.env.ATOM_HOME, 'packages', 'test-git-repo', 'package.json')
+          pkgJsonPath = path.join(process.env.SOLDAT_HOME, 'packages', 'test-git-repo', 'package.json')
 
-      it 'installs the repository with a working dir to $ATOM_HOME/packages', ->
+      it 'installs the repository with a working dir to $SOLDAT_HOME/packages', ->
         expect(fs.existsSync(pkgJsonPath)).toBeTruthy()
 
       it 'adds recrueInstallSource to the package.json with the source and sha', ->
@@ -420,7 +420,7 @@ describe 'recrue install', ->
         allDeps = deps.concat(devDeps)
         expect(allDeps).toEqual ["tiny-node-module-one", "tiny-node-module-two"]
         allDeps.forEach (dep) ->
-          modPath = path.join(process.env.ATOM_HOME, 'packages', 'test-git-repo', 'node_modules', dep)
+          modPath = path.join(process.env.SOLDAT_HOME, 'packages', 'test-git-repo', 'node_modules', dep)
           expect(fs.existsSync(modPath)).toBeTruthy()
 
     describe 'when installing a Git URL and --json is specified', ->
@@ -437,14 +437,14 @@ describe 'recrue install', ->
           callback.callCount is 1
 
         runs ->
-          pkgJsonPath = path.join(process.env.ATOM_HOME, 'packages', 'test-git-repo', 'package.json')
+          pkgJsonPath = path.join(process.env.SOLDAT_HOME, 'packages', 'test-git-repo', 'package.json')
 
       it 'logs the installation path and the package metadata for a package installed via git url', ->
         sha = '8ae432341ac6708aff9bb619eb015da14e9d0c0f'
         expect(process.stdout.write.calls.length).toBe 0
         json = JSON.parse(console.log.argsForCall[0][0])
         expect(json.length).toBe 1
-        expect(json[0].installPath).toBe path.join(process.env.ATOM_HOME, 'packages', 'test-git-repo')
+        expect(json[0].installPath).toBe path.join(process.env.SOLDAT_HOME, 'packages', 'test-git-repo')
         expect(json[0].metadata.name).toBe 'test-git-repo'
         expect(json[0].metadata.recrueInstallSource).toEqual
           type: 'git'
@@ -463,9 +463,9 @@ describe 'recrue install', ->
         expect(process.stdout.write.calls.length).toBe 0
         json = JSON.parse(console.log.argsForCall[0][0])
         expect(json.length).toBe 2
-        expect(json[0].installPath).toBe path.join(process.env.ATOM_HOME, 'packages', 'test-module')
+        expect(json[0].installPath).toBe path.join(process.env.SOLDAT_HOME, 'packages', 'test-module')
         expect(json[0].metadata.name).toBe 'test-module'
-        expect(json[1].installPath).toBe path.join(process.env.ATOM_HOME, 'packages', 'test-module2')
+        expect(json[1].installPath).toBe path.join(process.env.SOLDAT_HOME, 'packages', 'test-module2')
         expect(json[1].metadata.name).toBe 'test-module2'
 
     describe "with a space in node-gyp's path", ->
@@ -474,12 +474,12 @@ describe 'recrue install', ->
       beforeEach ->
         fs.renameSync path.join(nodeModules, 'node-gyp'), path.join(nodeModules, 'with a space')
         process.env.npm_config_node_gyp = path.join(nodeModules, 'with a space', 'bin', 'node-gyp.js')
-        process.env.ATOM_NODE_GYP_PATH = path.join(nodeModules, 'with a space', 'bin', 'node-gyp.js')
+        process.env.SOLDAT_NODE_GYP_PATH = path.join(nodeModules, 'with a space', 'bin', 'node-gyp.js')
 
       afterEach ->
         fs.renameSync path.join(nodeModules, 'with a space'), path.join(nodeModules, 'node-gyp')
         process.env.npm_config_node_gyp = path.join(nodeModules, '.bin', 'node-gyp')
-        process.env.ATOM_NODE_GYP_PATH = path.join(nodeModules, 'node-gyp', 'bin', 'node-gyp.js')
+        process.env.SOLDAT_NODE_GYP_PATH = path.join(nodeModules, 'node-gyp', 'bin', 'node-gyp.js')
 
       it 'builds native code successfully', ->
         callback = jasmine.createSpy('callback')
@@ -491,7 +491,7 @@ describe 'recrue install', ->
         runs ->
           expect(callback.mostRecentCall.args[0]).toBeNull()
 
-          testModuleDirectory = path.join(atomHome, 'packages', 'native-package')
+          testModuleDirectory = path.join(soldatHome, 'packages', 'native-package')
           expect(fs.existsSync(path.join(testModuleDirectory, 'index.js'))).toBeTruthy()
           expect(fs.existsSync(path.join(testModuleDirectory, 'package.json'))).toBeTruthy()
           expect(fs.existsSync(path.join(testModuleDirectory, 'build', 'Release', 'native.node'))).toBeTruthy()

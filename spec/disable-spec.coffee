@@ -12,10 +12,10 @@ describe 'recrue disable', ->
     spyOnToken()
 
   it 'disables an enabled package', ->
-    atomHome = temp.mkdirSync('recrue-home-dir-')
-    process.env.ATOM_HOME = atomHome
+    soldatHome = temp.mkdirSync('recrue-home-dir-')
+    process.env.SOLDAT_HOME = soldatHome
     callback = jasmine.createSpy('callback')
-    configFilePath = path.join(atomHome, 'config.cson')
+    configFilePath = path.join(soldatHome, 'config.cson')
 
     CSON.writeFileSync configFilePath, '*':
       core:
@@ -23,7 +23,7 @@ describe 'recrue disable', ->
           "test-module"
         ]
 
-    packagesPath = path.join(atomHome, 'packages')
+    packagesPath = path.join(soldatHome, 'packages')
     packageSrcPath = path.join(__dirname, 'fixtures')
     fs.makeTreeSync(packagesPath)
     wrench.copyDirSyncRecursive(path.join(packageSrcPath, 'test-module'), path.join(packagesPath, 'test-module'))
@@ -51,10 +51,10 @@ describe 'recrue disable', ->
           ]
 
   it 'does nothing if a package is already disabled', ->
-    atomHome = temp.mkdirSync('recrue-home-dir-')
-    process.env.ATOM_HOME = atomHome
+    soldatHome = temp.mkdirSync('recrue-home-dir-')
+    process.env.SOLDAT_HOME = soldatHome
     callback = jasmine.createSpy('callback')
-    configFilePath = path.join(atomHome, 'config.cson')
+    configFilePath = path.join(soldatHome, 'config.cson')
 
     CSON.writeFileSync configFilePath, '*':
       core:
@@ -83,8 +83,8 @@ describe 'recrue disable', ->
           ]
 
   it 'produces an error if config.cson doesn\'t exist', ->
-    atomHome = temp.mkdirSync('recrue-home-dir-')
-    process.env.ATOM_HOME = atomHome
+    soldatHome = temp.mkdirSync('recrue-home-dir-')
+    process.env.SOLDAT_HOME = soldatHome
     callback = jasmine.createSpy('callback')
 
     runs ->
@@ -98,8 +98,8 @@ describe 'recrue disable', ->
       expect(console.error.argsForCall[0][0].length).toBeGreaterThan 0
 
   it 'complains if user supplies no packages', ->
-    atomHome = temp.mkdirSync('recrue-home-dir-')
-    process.env.ATOM_HOME = atomHome
+    soldatHome = temp.mkdirSync('recrue-home-dir-')
+    process.env.SOLDAT_HOME = soldatHome
     callback = jasmine.createSpy('callback')
 
     runs ->

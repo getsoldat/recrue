@@ -17,31 +17,31 @@ class View extends Command
 
       Usage: recrue view <package_name>
 
-      View information about a package/theme in the atom.io registry.
+      View information about a package/theme in the soldat.tv registry.
     """
     options.alias('h', 'help').describe('help', 'Print this usage message')
     options.boolean('json').describe('json', 'Output featured packages as JSON array')
-    options.string('compatible').describe('compatible', 'Show the latest version compatible with this Atom version')
+    options.string('compatible').describe('compatible', 'Show the latest version compatible with this Soldat version')
 
-  loadInstalledAtomVersion: (options, callback) ->
+  loadInstalledSoldatVersion: (options, callback) ->
     process.nextTick =>
       if options.argv.compatible
         version = @normalizeVersion(options.argv.compatible)
-        installedAtomVersion = version if semver.valid(version)
-      callback(installedAtomVersion)
+        installedSoldatVersion = version if semver.valid(version)
+      callback(installedSoldatVersion)
 
   getLatestCompatibleVersion: (pack, options, callback) ->
-    @loadInstalledAtomVersion options, (installedAtomVersion) ->
-      return callback(pack.releases.latest) unless installedAtomVersion
+    @loadInstalledSoldatVersion options, (installedSoldatVersion) ->
+      return callback(pack.releases.latest) unless installedSoldatVersion
 
       latestVersion = null
       for version, metadata of pack.versions ? {}
         continue unless semver.valid(version)
         continue unless metadata
 
-        engine = metadata.engines?.atom ? '*'
+        engine = metadata.engines?.soldat ? '*'
         continue unless semver.validRange(engine)
-        continue unless semver.satisfies(installedAtomVersion, engine)
+        continue unless semver.satisfies(installedSoldatVersion, engine)
 
         latestVersion ?= version
         latestVersion = version if semver.gt(version, latestVersion)
@@ -54,7 +54,7 @@ class View extends Command
 
   getPackage: (packageName, options, callback) ->
     requestSettings =
-      url: "#{config.getAtomPackagesUrl()}/#{packageName}"
+      url: "#{config.getSoldatPackagesUrl()}/#{packageName}"
       json: true
     request.get requestSettings, (error, response, body={}) =>
       if error?

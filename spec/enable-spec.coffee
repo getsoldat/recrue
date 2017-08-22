@@ -11,10 +11,10 @@ describe 'recrue enable', ->
     spyOnToken()
 
   it 'enables a disabled package', ->
-    atomHome = temp.mkdirSync('recrue-home-dir-')
-    process.env.ATOM_HOME = atomHome
+    soldatHome = temp.mkdirSync('recrue-home-dir-')
+    process.env.SOLDAT_HOME = soldatHome
     callback = jasmine.createSpy('callback')
-    configFilePath = path.join(atomHome, 'config.cson')
+    configFilePath = path.join(soldatHome, 'config.cson')
 
     CSON.writeFileSync configFilePath, '*':
       core:
@@ -45,10 +45,10 @@ describe 'recrue enable', ->
           ]
 
   it 'does nothing if a package is already enabled', ->
-    atomHome = temp.mkdirSync('recrue-home-dir-')
-    process.env.ATOM_HOME = atomHome
+    soldatHome = temp.mkdirSync('recrue-home-dir-')
+    process.env.SOLDAT_HOME = soldatHome
     callback = jasmine.createSpy('callback')
-    configFilePath = path.join(atomHome, 'config.cson')
+    configFilePath = path.join(soldatHome, 'config.cson')
 
     CSON.writeFileSync configFilePath, '*':
       core:
@@ -76,8 +76,8 @@ describe 'recrue enable', ->
           ]
 
   it 'produces an error if config.cson doesn\'t exist', ->
-    atomHome = temp.mkdirSync('recrue-home-dir-')
-    process.env.ATOM_HOME = atomHome
+    soldatHome = temp.mkdirSync('recrue-home-dir-')
+    process.env.SOLDAT_HOME = soldatHome
     callback = jasmine.createSpy('callback')
 
     runs ->
@@ -91,8 +91,8 @@ describe 'recrue enable', ->
       expect(console.error.argsForCall[0][0].length).toBeGreaterThan 0
 
   it 'complains if user supplies no packages', ->
-    atomHome = temp.mkdirSync('recrue-home-dir-')
-    process.env.ATOM_HOME = atomHome
+    soldatHome = temp.mkdirSync('recrue-home-dir-')
+    process.env.SOLDAT_HOME = soldatHome
     callback = jasmine.createSpy('callback')
 
     runs ->

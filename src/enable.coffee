@@ -25,9 +25,9 @@ class Enable extends Command
     options = @parseOptions(options.commandArgs)
     packageNames = @packageNamesFromArgv(options.argv)
 
-    configFilePath = CSON.resolve(path.join(config.getAtomDirectory(), 'config'))
+    configFilePath = CSON.resolve(path.join(config.getSoldatDirectory(), 'config'))
     unless configFilePath
-      callback("Could not find config.cson. Run Atom first?")
+      callback("Could not find config.cson. Run Soldat first?")
       return
 
     try

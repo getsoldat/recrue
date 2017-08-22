@@ -17,7 +17,7 @@ createFakePackage = (type, metadata) ->
   packagesFolder = switch type
     when "user", "git" then "packages"
     when "dev" then path.join("dev", "packages")
-  targetFolder = path.join(process.env.ATOM_HOME, packagesFolder, metadata.name)
+  targetFolder = path.join(process.env.SOLDAT_HOME, packagesFolder, metadata.name)
   fs.makeTreeSync targetFolder
   fs.writeFileSync path.join(targetFolder, 'package.json'), JSON.stringify(metadata)
 
@@ -25,26 +25,26 @@ removeFakePackage = (type, name) ->
   packagesFolder = switch type
     when "user", "git" then "packages"
     when "dev" then path.join("dev", "packages")
-  targetFolder = path.join(process.env.ATOM_HOME, packagesFolder, name)
+  targetFolder = path.join(process.env.SOLDAT_HOME, packagesFolder, name)
   fs.removeSync(targetFolder)
 
 describe 'recrue list', ->
-  [resourcePath, atomHome] = []
+  [resourcePath, soldatHome] = []
 
   beforeEach ->
     silenceOutput()
     spyOnToken()
 
     resourcePath = temp.mkdirSync('recrue-resource-path-')
-    atomPackages =
+    soldatPackages =
       'test-module':
         metadata:
           name: 'test-module'
           version: '1.0.0'
-    fs.writeFileSync(path.join(resourcePath, 'package.json'), JSON.stringify(_atomPackages: atomPackages))
-    process.env.ATOM_RESOURCE_PATH = resourcePath
-    atomHome = temp.mkdirSync('recrue-home-dir-')
-    process.env.ATOM_HOME = atomHome
+    fs.writeFileSync(path.join(resourcePath, 'package.json'), JSON.stringify(_soldatPackages: soldatPackages))
+    process.env.SOLDAT_RESOURCE_PATH = resourcePath
+    soldatHome = temp.mkdirSync('recrue-home-dir-')
+    process.env.SOLDAT_HOME = soldatHome
 
     createFakePackage "user",
       name: "user-package"
@@ -60,14 +60,14 @@ describe 'recrue list', ->
         source: "git+ssh://git@github.com:user/repo.git"
         sha: "abcdef1234567890"
 
-    badPackagePath = path.join(process.env.ATOM_HOME, "packages", ".bin")
+    badPackagePath = path.join(process.env.SOLDAT_HOME, "packages", ".bin")
     fs.makeTreeSync badPackagePath
     fs.writeFileSync path.join(badPackagePath, "file.txt"), "some fake stuff"
 
   it 'lists the installed packages', ->
     listPackages [], ->
       lines = console.log.argsForCall.map((arr) -> arr.join(' '))
-      expect(lines[0]).toMatch /Built-in Atom Packages.*1/
+      expect(lines[0]).toMatch /Built-in Soldat Packages.*1/
       expect(lines[1]).toMatch /test-module@1\.0\.0/
       expect(lines[3]).toMatch /Dev Packages.*1/
       expect(lines[4]).toMatch /dev-package@1\.0\.0/
@@ -78,10 +78,10 @@ describe 'recrue list', ->
       expect(lines.join("\n")).not.toContain '.bin' # ensure invalid packages aren't listed
 
   it 'labels disabled packages', ->
-    packagesPath = path.join(atomHome, 'packages')
+    packagesPath = path.join(soldatHome, 'packages')
     fs.makeTreeSync(packagesPath)
     wrench.copyDirSyncRecursive(path.join(__dirname, 'fixtures', 'test-module'), path.join(packagesPath, 'test-module'))
-    configPath = path.join(atomHome, 'config.cson')
+    configPath = path.join(soldatHome, 'config.cson')
     CSON.writeFileSync configPath, '*':
       core: disabledPackages: ["test-module"]
 
@@ -116,7 +116,7 @@ describe 'recrue list', ->
       removeFakePackage 'user', 'user-package'
       listPackages [], ->
         lines = console.log.argsForCall.map((arr) -> arr.join(' '))
-        expect(lines[0]).toMatch /Built-in Atom Packages.*1/
+        expect(lines[0]).toMatch /Built-in Soldat Packages.*1/
         expect(lines[1]).toMatch /test-module@1\.0\.0/
         expect(lines[3]).toMatch /Dev Packages.*1/
         expect(lines[4]).toMatch /dev-package@1\.0\.0/

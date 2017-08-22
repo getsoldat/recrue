@@ -22,19 +22,19 @@ class Star extends Command
 
       Usage: recrue star <package_name>...
 
-      Star the given packages on https://atom.io
+      Star the given packages on https://soldat.tv
 
       Run `recrue stars` to see all your starred packages.
     """
     options.alias('h', 'help').describe('help', 'Print this usage message')
-    options.boolean('installed').describe('installed', 'Star all packages in ~/.atom/packages')
+    options.boolean('installed').describe('installed', 'Star all packages in ~/.soldat/packages')
 
   starPackage: (packageName, {ignoreUnpublishedPackages, token}={}, callback) ->
     process.stdout.write '\u2B50  ' if process.platform is 'darwin'
     process.stdout.write "Starring #{packageName} "
     requestSettings =
       json: true
-      url: "#{config.getAtomPackagesUrl()}/#{packageName}/star"
+      url: "#{config.getSoldatPackagesUrl()}/#{packageName}/star"
       headers:
         authorization: token
     request.post requestSettings, (error, response, body={}) =>
@@ -54,7 +54,7 @@ class Star extends Command
 
   getInstalledPackageNames: ->
     installedPackages = []
-    userPackagesDirectory = path.join(config.getAtomDirectory(), 'packages')
+    userPackagesDirectory = path.join(config.getSoldatDirectory(), 'packages')
     for child in fs.list(userPackagesDirectory)
       continue unless fs.isDirectorySync(path.join(userPackagesDirectory, child))
 

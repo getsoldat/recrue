@@ -21,7 +21,7 @@ class Stars extends Command
              recrue stars --user thedaniel
              recrue stars --themes
 
-      List or install starred Atom packages and themes.
+      List or install starred Soldat packages and themes.
     """
     options.alias('h', 'help').describe('help', 'Print this usage message')
     options.alias('i', 'install').boolean('install').describe('install', 'Install the starred packages')
@@ -29,15 +29,15 @@ class Stars extends Command
     options.alias('u', 'user').string('user').describe('user', 'GitHub username to show starred packages for')
     options.boolean('json').describe('json', 'Output packages as a JSON array')
 
-  getStarredPackages: (user, atomVersion, callback) ->
+  getStarredPackages: (user, soldatVersion, callback) ->
     requestSettings = json: true
-    requestSettings.qs = engine: atomVersion if atomVersion
+    requestSettings.qs = engine: soldatVersion if soldatVersion
 
     if user
-      requestSettings.url = "#{config.getAtomApiUrl()}/users/#{user}/stars"
+      requestSettings.url = "#{config.getSoldatApiUrl()}/users/#{user}/stars"
       @requestStarredPackages(requestSettings, callback)
     else
-      requestSettings.url = "#{config.getAtomApiUrl()}/stars"
+      requestSettings.url = "#{config.getSoldatApiUrl()}/stars"
       Login.getTokenOrLogin (error, token) =>
         return callback(error) if error?
 
@@ -83,7 +83,7 @@ class Stars extends Command
       label
 
     console.log()
-    console.log "Use `recrue stars --install` to install them all or visit #{'http://atom.io/packages'.underline} to read more about them."
+    console.log "Use `recrue stars --install` to install them all or visit #{'http://soldat.tv/packages'.underline} to read more about them."
     console.log()
     callback()
 

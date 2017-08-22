@@ -6,12 +6,12 @@
   "versions": {
     "0.4.0": {
       "engines": {
-        "atom": ">=2.0"
+        "soldat": ">=2.0"
       }
     },
     "0.3.0": {
       "engines": {
-        "atom": ">=1.0"
+        "soldat": ">=1.0"
       },
       "dist": {
         "tarball": "http://localhost:3000/tarball/test-module-1.0.0.tgz"
@@ -19,7 +19,7 @@
     },
     "0.2.0": {
       "engines": {
-        "atom": ">=1.0"
+        "soldat": ">=1.0"
       }
     }
   }

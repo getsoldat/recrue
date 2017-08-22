@@ -6,7 +6,7 @@ temp = require 'temp'
 recrue = require '../lib/recrue-cli'
 
 describe 'recrue stars', ->
-  [atomHome, server] = []
+  [soldatHome, server] = []
 
   beforeEach ->
     silenceOutput()
@@ -34,12 +34,12 @@ describe 'recrue stars', ->
     server =  http.createServer(app)
     server.listen(3000)
 
-    atomHome = temp.mkdirSync('recrue-home-dir-')
-    process.env.ATOM_HOME = atomHome
-    process.env.ATOM_API_URL = "http://localhost:3000"
-    process.env.ATOM_ELECTRON_URL = "http://localhost:3000/node"
-    process.env.ATOM_PACKAGES_URL = "http://localhost:3000/packages"
-    process.env.ATOM_ELECTRON_VERSION = 'v0.10.3'
+    soldatHome = temp.mkdirSync('recrue-home-dir-')
+    process.env.SOLDAT_HOME = soldatHome
+    process.env.SOLDAT_API_URL = "http://localhost:3000"
+    process.env.SOLDAT_ELECTRON_URL = "http://localhost:3000/node"
+    process.env.SOLDAT_PACKAGES_URL = "http://localhost:3000/packages"
+    process.env.SOLDAT_ELECTRON_VERSION = 'v0.10.3'
 
   afterEach ->
     server.close()
@@ -70,7 +70,7 @@ describe 'recrue stars', ->
 
   describe "when the install flag is specified", ->
     it "installs all of the stars", ->
-      testModuleDirectory = path.join(atomHome, 'packages', 'test-module')
+      testModuleDirectory = path.join(soldatHome, 'packages', 'test-module')
       expect(fs.existsSync(testModuleDirectory)).toBeFalsy()
       callback = jasmine.createSpy('callback')
       recrue.run(['stars', '--user', 'hubot', '--install'], callback)

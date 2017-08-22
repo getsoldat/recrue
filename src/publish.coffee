@@ -18,7 +18,7 @@ class Publish extends Command
 
   constructor: ->
     @userConfigPath = config.getUserConfigPath()
-    @atomNpmPath = require.resolve('npm/bin/npm-cli')
+    @soldatNpmPath = require.resolve('npm/bin/npm-cli')
 
   parseOptions: (argv) ->
     options = yargs(argv).wrap(100)
@@ -36,7 +36,7 @@ class Publish extends Command
       pushed up to the remote repository automatically using this option.
 
       If a new name is provided via the --rename flag, the package.json file is
-      updated with the new name and the package's name is updated on Atom.io.
+      updated with the new name and the package's name is updated on Soldat.tv.
 
       Run `recrue featured` to see all the featured packages or
       `recrue view <packagename>` to see information about your package after you
@@ -54,7 +54,7 @@ class Publish extends Command
   versionPackage: (version, callback) ->
     process.stdout.write 'Preparing and tagging a new version '
     versionArgs = ['version', version, '-m', 'Prepare %s release']
-    @fork @atomNpmPath, versionArgs, (code, stderr='', stdout='') =>
+    @fork @soldatNpmPath, versionArgs, (code, stderr='', stdout='') =>
       if code is 0
         @logSuccess()
         callback(null, stdout.trim())
@@ -74,7 +74,7 @@ class Publish extends Command
       @logCommandResults(callback, args...)
 
   # Check for the tag being available from the GitHub API before notifying
-  # atom.io about the new version.
+  # soldat.tv about the new version.
   #
   # The tag is checked for 5 times at 1 second intervals.
   #
@@ -111,7 +111,7 @@ class Publish extends Command
       return callback(error) if error?
 
       requestSettings =
-        url: "#{config.getAtomPackagesUrl()}/#{packageName}"
+        url: "#{config.getSoldatPackagesUrl()}/#{packageName}"
         json: true
         headers:
           authorization: token
@@ -146,7 +146,7 @@ class Publish extends Command
           return
 
         requestSettings =
-          url: config.getAtomPackagesUrl()
+          url: config.getSoldatPackagesUrl()
           json: true
           body:
             repository: repository
@@ -176,7 +176,7 @@ class Publish extends Command
         return
 
       requestSettings =
-        url: "#{config.getAtomPackagesUrl()}/#{packageName}/versions"
+        url: "#{config.getSoldatPackagesUrl()}/#{packageName}/versions"
         json: true
         body:
           tag: tag
@@ -219,7 +219,7 @@ class Publish extends Command
     if process.platform is 'darwin'
       process.stdout.write ' \uD83D\uDC4D  \uD83D\uDCE6  \uD83C\uDF89'
 
-    process.stdout.write "\nCheck it out at https://atom.io/packages/#{pack.name}\n"
+    process.stdout.write "\nCheck it out at https://soldat.tv/packages/#{pack.name}\n"
 
   loadMetadata: ->
     metadataPath = path.resolve('package.json')
@@ -301,9 +301,9 @@ class Publish extends Command
 
       semverRange is 'latest'
 
-    if pack.engines?.atom?
-      unless semver.validRange(pack.engines.atom)
-        throw new Error("The Atom engine range in the package.json file is invalid: #{pack.engines.atom}")
+    if pack.engines?.soldat?
+      unless semver.validRange(pack.engines.soldat)
+        throw new Error("The Soldat engine range in the package.json file is invalid: #{pack.engines.soldat}")
 
     for packageName, semverRange of pack.dependencies
       unless isValidRange(semverRange)

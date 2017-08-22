@@ -16,7 +16,7 @@ describe 'recrue search', ->
     server =  http.createServer(app)
     server.listen(3000)
 
-    process.env.ATOM_PACKAGES_URL = "http://localhost:3000"
+    process.env.SOLDAT_PACKAGES_URL = "http://localhost:3000"
 
   afterEach ->
     server.close()

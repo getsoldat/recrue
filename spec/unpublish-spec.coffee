@@ -27,8 +27,8 @@ describe 'recrue unpublish', ->
     server =  http.createServer(app)
     server.listen(3000)
 
-    process.env.ATOM_HOME = temp.mkdirSync('recrue-home-dir-')
-    process.env.ATOM_API_URL = "http://localhost:3000"
+    process.env.SOLDAT_HOME = temp.mkdirSync('recrue-home-dir-')
+    process.env.SOLDAT_API_URL = "http://localhost:3000"
 
   afterEach ->
     server.close()

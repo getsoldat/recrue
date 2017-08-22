@@ -15,9 +15,9 @@ class List extends Command
   @commandNames: ['list', 'ls']
 
   constructor: ->
-    @userPackagesDirectory = path.join(config.getAtomDirectory(), 'packages')
-    @devPackagesDirectory = path.join(config.getAtomDirectory(), 'dev', 'packages')
-    if configPath = CSON.resolve(path.join(config.getAtomDirectory(), 'config'))
+    @userPackagesDirectory = path.join(config.getSoldatDirectory(), 'packages')
+    @devPackagesDirectory = path.join(config.getSoldatDirectory(), 'dev', 'packages')
+    if configPath = CSON.resolve(path.join(config.getSoldatDirectory(), 'config'))
       try
         @disabledPackages = CSON.readFileSync(configPath)?['*']?.core?.disabledPackages
     @disabledPackages ?= []
@@ -33,7 +33,7 @@ class List extends Command
              recrue list --installed --bare > my-packages.txt
              recrue list --json
 
-      List all the installed packages and also the packages bundled with Atom.
+      List all the installed packages and also the packages bundled with Soldat.
     """
     options.alias('b', 'bare').boolean('bare').describe('bare', 'Print packages one per line with no formatting')
     options.alias('d', 'dev').boolean('dev').default('dev', true).describe('dev', 'Include dev packages')
@@ -117,9 +117,9 @@ class List extends Command
     config.getResourcePath (resourcePath) ->
       try
         metadataPath = path.join(resourcePath, 'package.json')
-        {_atomPackages} = JSON.parse(fs.readFileSync(metadataPath))
-      _atomPackages ?= {}
-      packages = (metadata for packageName, {metadata} of _atomPackages)
+        {_soldatPackages} = JSON.parse(fs.readFileSync(metadataPath))
+      _soldatPackages ?= {}
+      packages = (metadata for packageName, {metadata} of _soldatPackages)
 
       packages = packages.filter (metadata) ->
         if options.argv.themes
@@ -131,9 +131,9 @@ class List extends Command
 
       unless options.argv.bare or options.argv.json
         if options.argv.themes
-          console.log "#{'Built-in Atom Themes'.cyan} (#{packages.length})"
+          console.log "#{'Built-in Soldat Themes'.cyan} (#{packages.length})"
         else
-          console.log "#{'Built-in Atom Packages'.cyan} (#{packages.length})"
+          console.log "#{'Built-in Soldat Packages'.cyan} (#{packages.length})"
 
       callback?(null, packages)
 

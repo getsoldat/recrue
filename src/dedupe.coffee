@@ -13,11 +13,11 @@ class Dedupe extends Command
   @commandNames: ['dedupe']
 
   constructor: ->
-    @atomDirectory = config.getAtomDirectory()
-    @atomPackagesDirectory = path.join(@atomDirectory, 'packages')
-    @atomNodeDirectory = path.join(@atomDirectory, '.node-gyp')
-    @atomNpmPath = require.resolve('npm/bin/npm-cli')
-    @atomNodeGypPath = require.resolve('node-gyp/bin/node-gyp')
+    @soldatDirectory = config.getSoldatDirectory()
+    @soldatPackagesDirectory = path.join(@soldatDirectory, 'packages')
+    @soldatNodeDirectory = path.join(@soldatDirectory, '.node-gyp')
+    @soldatNpmPath = require.resolve('npm/bin/npm-cli')
+    @soldatNodeGypPath = require.resolve('node-gyp/bin/node-gyp')
 
   parseOptions: (argv) ->
     options = yargs(argv).wrap(100)
@@ -39,10 +39,10 @@ class Dedupe extends Command
     installNodeArgs.push("--arch=#{config.getElectronArch()}")
     installNodeArgs.push('--ensure')
 
-    env = _.extend({}, process.env, {HOME: @atomNodeDirectory, RUSTUP_HOME: config.getRustupHomeDirPath()})
+    env = _.extend({}, process.env, {HOME: @soldatNodeDirectory, RUSTUP_HOME: config.getRustupHomeDirPath()})
     env.USERPROFILE = env.HOME if config.isWin32()
 
-    fs.makeTreeSync(@atomDirectory)
+    fs.makeTreeSync(@soldatDirectory)
     config.loadNpm (error, npm) =>
       # node-gyp doesn't currently have an option for this so just set the
       # environment variable to bypass strict SSL
@@ -54,7 +54,7 @@ class Dedupe extends Command
       proxy = npm.config.get('https-proxy') or npm.config.get('proxy') or env.HTTPS_PROXY or env.HTTP_PROXY
       installNodeArgs.push("--proxy=#{proxy}") if proxy
 
-      @fork @atomNodeGypPath, installNodeArgs, {env, cwd: @atomDirectory}, (code, stderr='', stdout='') ->
+      @fork @soldatNodeGypPath, installNodeArgs, {env, cwd: @soldatDirectory}, (code, stderr='', stdout='') ->
         if code is 0
           callback()
         else
@@ -83,26 +83,26 @@ class Dedupe extends Command
 
     dedupeArgs.push(packageName) for packageName in options.argv._
 
-    env = _.extend({}, process.env, {HOME: @atomNodeDirectory, RUSTUP_HOME: config.getRustupHomeDirPath()})
+    env = _.extend({}, process.env, {HOME: @soldatNodeDirectory, RUSTUP_HOME: config.getRustupHomeDirPath()})
     env.USERPROFILE = env.HOME if config.isWin32()
     dedupeOptions = {env}
     dedupeOptions.cwd = options.cwd if options.cwd
 
-    @fork(@atomNpmPath, dedupeArgs, dedupeOptions, callback)
+    @fork(@soldatNpmPath, dedupeArgs, dedupeOptions, callback)
 
-  createAtomDirectories: ->
-    fs.makeTreeSync(@atomDirectory)
-    fs.makeTreeSync(@atomNodeDirectory)
+  createSoldatDirectories: ->
+    fs.makeTreeSync(@soldatDirectory)
+    fs.makeTreeSync(@soldatNodeDirectory)
 
   run: (options) ->
     {callback, cwd} = options
     options = @parseOptions(options.commandArgs)
     options.cwd = cwd
 
-    @createAtomDirectories()
+    @createSoldatDirectories()
 
     commands = []
-    commands.push (callback) => @loadInstalledAtomMetadata(callback)
+    commands.push (callback) => @loadInstalledSoldatMetadata(callback)
     commands.push (callback) => @installNode(callback)
     commands.push (callback) => @dedupeModules(options, callback)
     async.waterfall commands, callback

@@ -22,10 +22,10 @@ class Install extends Command
   @commandNames: ['install', 'i']
 
   constructor: ->
-    @atomDirectory = config.getAtomDirectory()
-    @atomPackagesDirectory = path.join(@atomDirectory, 'packages')
-    @atomNodeDirectory = path.join(@atomDirectory, '.node-gyp')
-    @atomNpmPath = require.resolve('npm/bin/npm-cli')
+    @soldatDirectory = config.getSoldatDirectory()
+    @soldatPackagesDirectory = path.join(@soldatDirectory, 'packages')
+    @soldatNodeDirectory = path.join(@soldatDirectory, '.node-gyp')
+    @soldatNpmPath = require.resolve('npm/bin/npm-cli')
 
   parseOptions: (argv) ->
     options = yargs(argv).wrap(100)
@@ -38,7 +38,7 @@ class Install extends Command
              recrue install --packages-file my-packages.txt
              recrue i (with any of the previous argument usage)
 
-      Install the given Atom package to ~/.atom/packages/<package_name>.
+      Install the given Soldat package to ~/.soldat/packages/<package_name>.
 
       If no package name is given then all the dependencies in the package.json
       file are installed to the node_modules folder in the current working
@@ -48,7 +48,7 @@ class Install extends Command
       package names to install with optional versions using the
       `package-name@version` syntax.
     """
-    options.alias('c', 'compatible').string('compatible').describe('compatible', 'Only install packages/themes compatible with this Atom version')
+    options.alias('c', 'compatible').string('compatible').describe('compatible', 'Only install packages/themes compatible with this Soldat version')
     options.alias('h', 'help').describe('help', 'Print this usage message')
     options.alias('s', 'silent').boolean('silent').describe('silent', 'Set the npm log level to silent')
     options.alias('q', 'quiet').boolean('quiet').describe('quiet', 'Set the npm log level to warn')
@@ -66,10 +66,10 @@ class Install extends Command
     installNodeArgs.push("--ensure")
     installNodeArgs.push("--verbose") if @verbose
 
-    env = _.extend({}, process.env, {HOME: @atomNodeDirectory, RUSTUP_HOME: config.getRustupHomeDirPath()})
+    env = _.extend({}, process.env, {HOME: @soldatNodeDirectory, RUSTUP_HOME: config.getRustupHomeDirPath()})
     env.USERPROFILE = env.HOME if config.isWin32()
 
-    fs.makeTreeSync(@atomDirectory)
+    fs.makeTreeSync(@soldatDirectory)
 
     # node-gyp doesn't currently have an option for this so just set the
     # environment variable to bypass strict SSL
@@ -81,11 +81,11 @@ class Install extends Command
     proxy = @npm.config.get('https-proxy') or @npm.config.get('proxy') or env.HTTPS_PROXY or env.HTTP_PROXY
     installNodeArgs.push("--proxy=#{proxy}") if proxy
 
-    opts = {env, cwd: @atomDirectory}
+    opts = {env, cwd: @soldatDirectory}
     opts.streaming = true if @verbose
 
-    atomNodeGypPath = process.env.ATOM_NODE_GYP_PATH or require.resolve('node-gyp/bin/node-gyp')
-    @fork atomNodeGypPath, installNodeArgs, opts, (code, stderr='', stdout='') ->
+    soldatNodeGypPath = process.env.SOLDAT_NODE_GYP_PATH or require.resolve('node-gyp/bin/node-gyp')
+    @fork soldatNodeGypPath, installNodeArgs, opts, (code, stderr='', stdout='') ->
       if code is 0
         callback()
       else
@@ -107,7 +107,7 @@ class Install extends Command
     if vsArgs = @getVisualStudioFlags()
       installArgs.push(vsArgs)
 
-    env = _.extend({}, process.env, {HOME: @atomNodeDirectory, RUSTUP_HOME: config.getRustupHomeDirPath()})
+    env = _.extend({}, process.env, {HOME: @soldatNodeDirectory, RUSTUP_HOME: config.getRustupHomeDirPath()})
     @addBuildEnvVars(env)
     installOptions = {env}
     installOptions.streaming = true if @verbose
@@ -118,7 +118,7 @@ class Install extends Command
       fs.makeTreeSync(nodeModulesDirectory)
       installOptions.cwd = installDirectory
 
-    @fork @atomNpmPath, installArgs, installOptions, (code, stderr='', stdout='') =>
+    @fork @soldatNpmPath, installArgs, installOptions, (code, stderr='', stdout='') =>
       if code is 0
         if installGlobally
           commands = []
@@ -127,7 +127,7 @@ class Install extends Command
           assert.equal(children.length, 1, "Expected there to only be one child in node_modules")
           child = children[0]
           source = path.join(nodeModulesDirectory, child)
-          destination = path.join(@atomPackagesDirectory, child)
+          destination = path.join(@soldatPackagesDirectory, child)
           commands.push (next) -> fs.cp(source, destination, next)
           commands.push (next) => @buildModuleCache(pack.name, next)
           commands.push (next) => @warmCompileCache(pack.name, next)
@@ -201,7 +201,7 @@ class Install extends Command
     if vsArgs = @getVisualStudioFlags()
       installArgs.push(vsArgs)
 
-    env = _.extend({}, process.env, {HOME: @atomNodeDirectory, RUSTUP_HOME: config.getRustupHomeDirPath()})
+    env = _.extend({}, process.env, {HOME: @soldatNodeDirectory, RUSTUP_HOME: config.getRustupHomeDirPath()})
     @updateWindowsEnv(env) if config.isWin32()
     @addNodeBinToEnv(env)
     @addProxyToEnv(env)
@@ -209,16 +209,16 @@ class Install extends Command
     installOptions.cwd = options.cwd if options.cwd
     installOptions.streaming = true if @verbose
 
-    @fork(@atomNpmPath, installArgs, installOptions, callback)
+    @fork(@soldatNpmPath, installArgs, installOptions, callback)
 
-  # Request package information from the atom.io API for a given package name.
+  # Request package information from the soldat.tv API for a given package name.
   #
   # packageName - The string name of the package to request.
   # callback - The function to invoke when the request completes with an error
   #            as the first argument and an object as the second.
   requestPackage: (packageName, callback) ->
     requestSettings =
-      url: "#{config.getAtomPackagesUrl()}/#{packageName}"
+      url: "#{config.getSoldatPackagesUrl()}/#{packageName}"
       json: true
       retries: 4
     request.get requestSettings, (error, response, body={}) ->
@@ -323,7 +323,7 @@ class Install extends Command
     unless options.argv.json
       process.stdout.write "Installing #{label} "
       if installGlobally
-        process.stdout.write "to #{@atomPackagesDirectory} "
+        process.stdout.write "to #{@soldatPackagesDirectory} "
 
     @requestPackage packageName, (error, pack) =>
       if error?
@@ -333,7 +333,7 @@ class Install extends Command
         packageVersion ?= @getLatestCompatibleVersion(pack)
         unless packageVersion
           @logFailure()
-          callback("No available version compatible with the installed Atom version: #{@installedAtomVersion}")
+          callback("No available version compatible with the installed Soldat version: #{@installedSoldatVersion}")
           return
 
         {tarball} = pack.versions[packageVersion]?.dist ? {}
@@ -404,10 +404,10 @@ class Install extends Command
     catch error
       {}
 
-  createAtomDirectories: ->
-    fs.makeTreeSync(@atomDirectory)
-    fs.makeTreeSync(@atomPackagesDirectory)
-    fs.makeTreeSync(@atomNodeDirectory)
+  createSoldatDirectories: ->
+    fs.makeTreeSync(@soldatDirectory)
+    fs.makeTreeSync(@soldatPackagesDirectory)
+    fs.makeTreeSync(@soldatNodeDirectory)
 
   # Compile a sample native module to see if a useable native build toolchain
   # is instlalled and successfully detected. This will include both Python
@@ -428,7 +428,7 @@ class Install extends Command
       if vsArgs = @getVisualStudioFlags()
         buildArgs.push(vsArgs)
 
-      env = _.extend({}, process.env, {HOME: @atomNodeDirectory, RUSTUP_HOME: config.getRustupHomeDirPath()})
+      env = _.extend({}, process.env, {HOME: @soldatNodeDirectory, RUSTUP_HOME: config.getRustupHomeDirPath()})
       @updateWindowsEnv(env) if config.isWin32()
       @addNodeBinToEnv(env)
       @addProxyToEnv(env)
@@ -437,7 +437,7 @@ class Install extends Command
 
       fs.removeSync(path.resolve(__dirname, '..', 'native-module', 'build'))
 
-      @fork @atomNpmPath, buildArgs, buildOptions, (args...) =>
+      @fork @soldatNpmPath, buildArgs, buildOptions, (args...) =>
         @logCommandResults(callback, args...)
 
   packageNamesFromPath: (filePath) ->
@@ -450,14 +450,14 @@ class Install extends Command
     @sanitizePackageNames(packages.split(/\s/))
 
   buildModuleCache: (packageName, callback) ->
-    packageDirectory = path.join(@atomPackagesDirectory, packageName)
+    packageDirectory = path.join(@soldatPackagesDirectory, packageName)
     rebuildCacheCommand = new RebuildModuleCache()
     rebuildCacheCommand.rebuild packageDirectory, ->
       # Ignore cache errors and just finish the install
       callback()
 
   warmCompileCache: (packageName, callback) ->
-    packageDirectory = path.join(@atomPackagesDirectory, packageName)
+    packageDirectory = path.join(@soldatPackagesDirectory, packageName)
 
     @getResourcePath (resourcePath) =>
       try
@@ -468,7 +468,7 @@ class Install extends Command
 
         onFile = (filePath) =>
           try
-            CompileCache.addPathToCache(filePath, @atomDirectory)
+            CompileCache.addPathToCache(filePath, @soldatDirectory)
 
         fs.traverseTreeSync(packageDirectory, onFile, onDirectory)
       callback(null)
@@ -476,14 +476,14 @@ class Install extends Command
   isBundledPackage: (packageName, callback) ->
     @getResourcePath (resourcePath) ->
       try
-        atomMetadata = JSON.parse(fs.readFileSync(path.join(resourcePath, 'package.json')))
+        soldatMetadata = JSON.parse(fs.readFileSync(path.join(resourcePath, 'package.json')))
       catch error
         return callback(false)
 
-      callback(atomMetadata?.packageDependencies?.hasOwnProperty(packageName))
+      callback(soldatMetadata?.packageDependencies?.hasOwnProperty(packageName))
 
   getLatestCompatibleVersion: (pack) ->
-    unless @installedAtomVersion
+    unless @installedSoldatVersion
       if isDeprecatedPackage(pack.name, pack.releases.latest)
         return null
       else
@@ -495,9 +495,9 @@ class Install extends Command
       continue unless metadata
       continue if isDeprecatedPackage(pack.name, version)
 
-      engine = metadata.engines?.atom ? '*'
+      engine = metadata.engines?.soldat ? '*'
       continue unless semver.validRange(engine)
-      continue unless semver.satisfies(@installedAtomVersion, engine)
+      continue unless semver.satisfies(@installedSoldatVersion, engine)
 
       latestVersion ?= version
       latestVersion = version if semver.gt(version, latestVersion)
@@ -510,7 +510,7 @@ class Install extends Command
   installGitPackage: (packageUrl, options, callback) ->
     tasks = []
 
-    cloneDir = temp.mkdirSync("atom-git-package-clone-")
+    cloneDir = temp.mkdirSync("soldat-git-package-clone-")
 
     tasks.push (data, next) =>
       urls = @getNormalizedGitUrls(packageUrl)
@@ -543,7 +543,7 @@ class Install extends Command
 
     tasks.push (data, next) =>
       {name} = data.metadata
-      targetDir = path.join(@atomPackagesDirectory, name)
+      targetDir = path.join(@soldatPackagesDirectory, name)
       process.stdout.write "Moving #{name} to #{targetDir} " unless options.argv.json
       fs.cp cloneDir, targetDir, (err) =>
         if err
@@ -608,11 +608,11 @@ class Install extends Command
     options = @parseOptions(options.commandArgs)
     packagesFilePath = options.argv['packages-file']
 
-    @createAtomDirectories()
+    @createSoldatDirectories()
 
     if options.argv.check
       config.loadNpm (error, @npm) =>
-        @loadInstalledAtomMetadata =>
+        @loadInstalledSoldatMetadata =>
           @checkNativeBuildTools(callback)
       return
 
@@ -637,9 +637,9 @@ class Install extends Command
         @isBundledPackage name, (isBundledPackage) =>
           if isBundledPackage
             console.error """
-              The #{name} package is bundled with Atom and should not be explicitly installed.
+              The #{name} package is bundled with Soldat and should not be explicitly installed.
               You can run `recrue uninstall #{name}` to uninstall it and then the version bundled
-              with Atom will be used.
+              with Soldat will be used.
             """.yellow
           @installRegisteredPackage({name, version}, options, nextInstallStep)
 
@@ -654,7 +654,7 @@ class Install extends Command
 
     commands = []
     commands.push (callback) => config.loadNpm (error, @npm) => callback(error)
-    commands.push (callback) => @loadInstalledAtomMetadata -> callback()
+    commands.push (callback) => @loadInstalledSoldatMetadata -> callback()
     packageNames.forEach (packageName) ->
       commands.push (callback) -> installPackage(packageName, callback)
     iteratee = (item, next) -> item(next)

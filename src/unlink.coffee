@@ -12,8 +12,8 @@ class Unlink extends Command
   @commandNames: ['unlink']
 
   constructor: ->
-    @devPackagesPath = path.join(config.getAtomDirectory(), 'dev', 'packages')
-    @packagesPath = path.join(config.getAtomDirectory(), 'packages')
+    @devPackagesPath = path.join(config.getSoldatDirectory(), 'dev', 'packages')
+    @packagesPath = path.join(config.getSoldatDirectory(), 'packages')
 
   parseOptions: (argv) ->
     options = yargs(argv).wrap(100)
@@ -21,15 +21,15 @@ class Unlink extends Command
 
       Usage: recrue unlink [<package_path>]
 
-      Delete the symlink in ~/.atom/packages for the package. The package in the
+      Delete the symlink in ~/.soldat/packages for the package. The package in the
       current working directory is unlinked if no path is given.
 
       Run `recrue links` to view all the currently linked packages.
     """
     options.alias('h', 'help').describe('help', 'Print this usage message')
-    options.alias('d', 'dev').boolean('dev').describe('dev', 'Unlink package from ~/.atom/dev/packages')
-    options.boolean('hard').describe('hard', 'Unlink package from ~/.atom/packages and ~/.atom/dev/packages')
-    options.alias('a', 'all').boolean('all').describe('all', 'Unlink all packages in ~/.atom/packages and ~/.atom/dev/packages')
+    options.alias('d', 'dev').boolean('dev').describe('dev', 'Unlink package from ~/.soldat/dev/packages')
+    options.boolean('hard').describe('hard', 'Unlink package from ~/.soldat/packages and ~/.soldat/dev/packages')
+    options.alias('a', 'all').boolean('all').describe('all', 'Unlink all packages in ~/.soldat/packages and ~/.soldat/dev/packages')
 
   getDevPackagePath: (packageName) -> path.join(@devPackagesPath, packageName)
 
