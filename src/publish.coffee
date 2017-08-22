@@ -6,7 +6,7 @@ Git = require 'git-utils'
 semver = require 'semver'
 
 fs = require './fs'
-config = require './apm'
+config = require './recrue'
 Command = require './command'
 Login = require './login'
 Packages = require './packages'
@@ -24,22 +24,22 @@ class Publish extends Command
     options = yargs(argv).wrap(100)
     options.usage """
 
-      Usage: apm publish [<newversion> | major | minor | patch | build]
-             apm publish --tag <tagname>
-             apm publish --rename <new-name>
+      Usage: recrue publish [<newversion> | major | minor | patch | build]
+             recrue publish --tag <tagname>
+             recrue publish --rename <new-name>
 
       Publish a new version of the package in the current working directory.
 
       If a new version or version increment is specified, then a new Git tag is
       created and the package.json file is updated with that new version before
-      it is published to the apm registry. The HEAD branch and the new tag are
+      it is published to the recrue registry. The HEAD branch and the new tag are
       pushed up to the remote repository automatically using this option.
 
       If a new name is provided via the --rename flag, the package.json file is
       updated with the new name and the package's name is updated on Atom.io.
 
-      Run `apm featured` to see all the featured packages or
-      `apm view <packagename>` to see information about your package after you
+      Run `recrue featured` to see all the featured packages or
+      `recrue view <packagename>` to see information about your package after you
       have published it.
     """
     options.alias('h', 'help').describe('help', 'Print this usage message')

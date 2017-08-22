@@ -1,7 +1,7 @@
 path = require 'path'
 _ = require 'underscore-plus'
 yargs = require 'yargs'
-apm = require './apm'
+recrue = require './recrue'
 Command = require './command'
 
 module.exports =
@@ -9,7 +9,7 @@ class Config extends Command
   @commandNames: ['config']
 
   constructor: ->
-    atomDirectory = apm.getAtomDirectory()
+    atomDirectory = recrue.getAtomDirectory()
     @atomNodeDirectory = path.join(atomDirectory, '.node-gyp')
     @atomNpmPath = require.resolve('npm/bin/npm-cli')
 
@@ -17,11 +17,11 @@ class Config extends Command
     options = yargs(argv).wrap(100)
     options.usage """
 
-      Usage: apm config set <key> <value>
-             apm config get <key>
-             apm config delete <key>
-             apm config list
-             apm config edit
+      Usage: recrue config set <key> <value>
+             recrue config get <key>
+             recrue config delete <key>
+             recrue config list
+             recrue config edit
 
     """
     options.alias('h', 'help').describe('help', 'Print this usage message')
@@ -30,10 +30,10 @@ class Config extends Command
     {callback} = options
     options = @parseOptions(options.commandArgs)
 
-    configArgs = ['--globalconfig', apm.getGlobalConfigPath(), '--userconfig', apm.getUserConfigPath(), 'config']
+    configArgs = ['--globalconfig', recrue.getGlobalConfigPath(), '--userconfig', recrue.getUserConfigPath(), 'config']
     configArgs = configArgs.concat(options.argv._)
 
-    env = _.extend({}, process.env, {HOME: @atomNodeDirectory, RUSTUP_HOME: apm.getRustupHomeDirPath()})
+    env = _.extend({}, process.env, {HOME: @atomNodeDirectory, RUSTUP_HOME: recrue.getRustupHomeDirPath()})
     configOptions = {env}
 
     @fork @atomNpmPath, configArgs, configOptions, (code, stderr='', stdout='') ->

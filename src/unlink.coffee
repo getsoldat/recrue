@@ -4,7 +4,7 @@ CSON = require 'season'
 yargs = require 'yargs'
 
 Command = require './command'
-config = require './apm'
+config = require './recrue'
 fs = require './fs'
 
 module.exports =
@@ -19,12 +19,12 @@ class Unlink extends Command
     options = yargs(argv).wrap(100)
     options.usage """
 
-      Usage: apm unlink [<package_path>]
+      Usage: recrue unlink [<package_path>]
 
       Delete the symlink in ~/.atom/packages for the package. The package in the
       current working directory is unlinked if no path is given.
 
-      Run `apm links` to view all the currently linked packages.
+      Run `recrue links` to view all the currently linked packages.
     """
     options.alias('h', 'help').describe('help', 'Print this usage message')
     options.alias('d', 'dev').boolean('dev').describe('dev', 'Unlink package from ~/.atom/dev/packages')

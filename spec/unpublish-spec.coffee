@@ -1,10 +1,10 @@
 express = require 'express'
 http = require 'http'
 temp = require 'temp'
-apm = require '../lib/apm-cli'
+recrue = require '../lib/recrue-cli'
 Unpublish = require '../lib/unpublish'
 
-describe 'apm unpublish', ->
+describe 'recrue unpublish', ->
   [server, unpublishPackageCallback, unpublishVersionCallback] = []
 
   beforeEach ->
@@ -27,7 +27,7 @@ describe 'apm unpublish', ->
     server =  http.createServer(app)
     server.listen(3000)
 
-    process.env.ATOM_HOME = temp.mkdirSync('apm-home-dir-')
+    process.env.ATOM_HOME = temp.mkdirSync('recrue-home-dir-')
     process.env.ATOM_API_URL = "http://localhost:3000"
 
   afterEach ->
@@ -36,7 +36,7 @@ describe 'apm unpublish', ->
   describe "when no version is specified", ->
     it 'unpublishes the package', ->
       callback = jasmine.createSpy('callback')
-      apm.run(['unpublish', '--force', 'test-package'], callback)
+      recrue.run(['unpublish', '--force', 'test-package'], callback)
 
       waitsFor 'waiting for unpublish command to complete', ->
         callback.callCount > 0
@@ -50,7 +50,7 @@ describe 'apm unpublish', ->
       it 'prompts to unpublish ALL versions', ->
         callback = jasmine.createSpy('callback')
         spyOn(Unpublish.prototype, 'prompt')
-        apm.run(['unpublish', 'test-package'], callback)
+        recrue.run(['unpublish', 'test-package'], callback)
 
         waitsFor 'waiting for prompt to be called', ->
           return Unpublish::prompt.argsForCall[0][0].match /unpublish ALL VERSIONS of 'test-package'.*irreversible/
@@ -60,7 +60,7 @@ describe 'apm unpublish', ->
           callback = jasmine.createSpy('callback')
           spyOn(Unpublish.prototype, 'prompt').andCallFake (args..., cb) -> cb('')
           spyOn(Unpublish.prototype, 'unpublishPackage')
-          apm.run(['unpublish', 'test-package'], callback)
+          recrue.run(['unpublish', 'test-package'], callback)
 
           waitsFor 'waiting for unpublish command to complete', ->
             callback.callCount > 0
@@ -72,7 +72,7 @@ describe 'apm unpublish', ->
     describe "when the package does not exist", ->
       it "calls back with an error", ->
         callback = jasmine.createSpy('callback')
-        apm.run(['unpublish', '--force', 'not-a-package'], callback)
+        recrue.run(['unpublish', '--force', 'not-a-package'], callback)
 
         waitsFor 'waiting for unpublish command to complete', ->
           callback.callCount > 0
@@ -85,7 +85,7 @@ describe 'apm unpublish', ->
   describe "when a version is specified", ->
     it 'unpublishes the version', ->
       callback = jasmine.createSpy('callback')
-      apm.run(['unpublish', '--force', 'test-package@1.0.0'], callback)
+      recrue.run(['unpublish', '--force', 'test-package@1.0.0'], callback)
 
       waitsFor 'waiting for unpublish command to complete', ->
         callback.callCount > 0
@@ -99,7 +99,7 @@ describe 'apm unpublish', ->
       it 'prompts to unpublish that version', ->
         callback = jasmine.createSpy('callback')
         spyOn(Unpublish.prototype, 'prompt')
-        apm.run(['unpublish', 'test-package@1.0.0'], callback)
+        recrue.run(['unpublish', 'test-package@1.0.0'], callback)
 
         waitsFor 'waiting for prompt to be called', ->
           return Unpublish::prompt.argsForCall[0][0].match /unpublish 'test-package@1.0.0'/
@@ -109,7 +109,7 @@ describe 'apm unpublish', ->
           callback = jasmine.createSpy('callback')
           spyOn(Unpublish.prototype, 'prompt').andCallFake (args..., cb) -> cb('')
           spyOn(Unpublish.prototype, 'unpublishPackage')
-          apm.run(['unpublish', 'test-package'], callback)
+          recrue.run(['unpublish', 'test-package'], callback)
 
           waitsFor 'waiting for unpublish command to complete', ->
             callback.callCount > 0
@@ -121,7 +121,7 @@ describe 'apm unpublish', ->
     describe "when the version does not exist", ->
       it "calls back with an error", ->
         callback = jasmine.createSpy('callback')
-        apm.run(['unpublish', '--force', 'test-package@2.0.0'], callback)
+        recrue.run(['unpublish', '--force', 'test-package@2.0.0'], callback)
 
         waitsFor 'waiting for unpublish command to complete', ->
           callback.callCount > 0

@@ -2,7 +2,7 @@ child_process = require 'child_process'
 path = require 'path'
 _ = require 'underscore-plus'
 semver = require 'semver'
-config = require './apm'
+config = require './recrue'
 git = require './git'
 
 module.exports =

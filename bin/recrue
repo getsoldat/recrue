@@ -4,9 +4,9 @@ set -e
 
 initialCwd=`pwd -P`
 
-apmPath=$0
-builtin cd "`dirname "$apmPath"`"
-binDir=`basename "$apmPath"`
+recruePath=$0
+builtin cd "`dirname "$recruePath"`"
+binDir=`basename "$recruePath"`
 
 # Detect node binary name
 osName=`uname -s`

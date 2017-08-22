@@ -3,7 +3,7 @@ path = require 'path'
 _ = require 'underscore-plus'
 yargs = require 'yargs'
 
-config = require './apm'
+config = require './recrue'
 Command = require './command'
 Install = require './install'
 
@@ -19,7 +19,7 @@ class Rebuild extends Command
     options = yargs(argv).wrap(100)
     options.usage """
 
-      Usage: apm rebuild [<name> [<name> ...]]
+      Usage: recrue rebuild [<name> [<name> ...]]
 
       Rebuild the given modules currently installed in the node_modules folder
       in the current working directory.

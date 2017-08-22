@@ -1,7 +1,7 @@
 async = require 'async'
 yargs = require 'yargs'
 
-config = require './apm'
+config = require './recrue'
 Command = require './command'
 Login = require './login'
 request = require './request'
@@ -14,11 +14,11 @@ class Unstar extends Command
     options = yargs(argv).wrap(100)
     options.usage """
 
-      Usage: apm unstar <package_name>...
+      Usage: recrue unstar <package_name>...
 
       Unstar the given packages on https://atom.io
 
-      Run `apm stars` to see all your starred packages.
+      Run `recrue stars` to see all your starred packages.
     """
     options.alias('h', 'help').describe('help', 'Print this usage message')
 

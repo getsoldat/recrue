@@ -3,7 +3,7 @@ path = require 'path'
 CSON = require 'season'
 yargs = require 'yargs'
 
-config = require './apm'
+config = require './recrue'
 Command = require './command'
 List = require './list'
 
@@ -15,7 +15,7 @@ class Disable extends Command
     options = yargs(argv).wrap(100)
     options.usage """
 
-      Usage: apm disable [<package_name>]...
+      Usage: recrue disable [<package_name>]...
 
       Disables the named package(s).
     """

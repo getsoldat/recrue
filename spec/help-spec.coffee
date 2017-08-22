@@ -1,14 +1,14 @@
-apm = require '../lib/apm-cli'
+recrue = require '../lib/recrue-cli'
 
 describe 'command help', ->
   beforeEach ->
     spyOnToken()
     silenceOutput()
 
-  describe "apm help publish", ->
+  describe "recrue help publish", ->
     it "displays the help for the command", ->
       callback = jasmine.createSpy('callback')
-      apm.run(['help', 'publish'], callback)
+      recrue.run(['help', 'publish'], callback)
 
       waitsFor 'waiting for help to complete', 60000, ->
         callback.callCount is 1
@@ -17,10 +17,10 @@ describe 'command help', ->
         expect(console.error.callCount).toBeGreaterThan 0
         expect(callback.mostRecentCall.args[0]).toBeUndefined()
 
-  describe "apm publish -h", ->
+  describe "recrue publish -h", ->
     it "displays the help for the command", ->
       callback = jasmine.createSpy('callback')
-      apm.run(['publish', '-h'], callback)
+      recrue.run(['publish', '-h'], callback)
 
       waitsFor 'waiting for help to complete', 60000, ->
         callback.callCount is 1
@@ -29,10 +29,10 @@ describe 'command help', ->
         expect(console.error.callCount).toBeGreaterThan 0
         expect(callback.mostRecentCall.args[0]).toBeUndefined()
 
-  describe "apm help", ->
-    it "displays the help for apm", ->
+  describe "recrue help", ->
+    it "displays the help for recrue", ->
       callback = jasmine.createSpy('callback')
-      apm.run(['help'], callback)
+      recrue.run(['help'], callback)
 
       waitsFor 'waiting for help to complete', 60000, ->
         callback.callCount is 1
@@ -41,10 +41,10 @@ describe 'command help', ->
         expect(console.error.callCount).toBeGreaterThan 0
         expect(callback.mostRecentCall.args[0]).toBeUndefined()
 
-  describe "apm", ->
-    it "displays the help for apm", ->
+  describe "recrue", ->
+    it "displays the help for recrue", ->
       callback = jasmine.createSpy('callback')
-      apm.run([], callback)
+      recrue.run([], callback)
 
       waitsFor 'waiting for help to complete', 60000, ->
         callback.callCount is 1

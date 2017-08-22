@@ -6,7 +6,7 @@ yargs = require 'yargs'
 _ = require 'underscore-plus'
 
 Command = require './command'
-config = require './apm'
+config = require './recrue'
 fs = require './fs'
 
 module.exports =
@@ -59,7 +59,7 @@ class Clean extends Command
     options = yargs(argv).wrap(100)
 
     options.usage """
-      Usage: apm clean
+      Usage: recrue clean
 
       Deletes all packages in the node_modules folder that are not referenced
       as a dependency in the package.json file.

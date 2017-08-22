@@ -22,7 +22,7 @@ class Login extends Command
     options = yargs(argv).wrap(100)
 
     options.usage """
-      Usage: apm login
+      Usage: recrue login
 
       Enter your Atom.io API token and save it to the keychain. This token will
       be used to identify you when publishing packages to atom.io.

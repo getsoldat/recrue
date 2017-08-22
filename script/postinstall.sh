@@ -6,9 +6,9 @@ echo ">> Downloading bundled Node"
 node script/download-node.js
 
 echo
-echo ">> Rebuilding apm dependencies with bundled Node $(./bin/node -p "process.version + ' ' + process.arch")"
+echo ">> Rebuilding recrue dependencies with bundled Node $(./bin/node -p "process.version + ' ' + process.arch")"
 ./bin/npm rebuild
 
 echo
-echo ">> Deduping apm dependencies"
+echo ">> Deduping recrue dependencies"
 ./bin/npm dedupe

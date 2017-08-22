@@ -2,12 +2,12 @@ path = require 'path'
 fs = require 'fs-plus'
 temp = require 'temp'
 wrench = require 'wrench'
-apm = require '../lib/apm-cli'
+recrue = require '../lib/recrue-cli'
 CSON = require 'season'
 
 listPackages = (args, doneCallback) ->
   callback = jasmine.createSpy('callback')
-  apm.run ['list'].concat(args), callback
+  recrue.run ['list'].concat(args), callback
 
   waitsFor -> callback.callCount is 1
 
@@ -28,14 +28,14 @@ removeFakePackage = (type, name) ->
   targetFolder = path.join(process.env.ATOM_HOME, packagesFolder, name)
   fs.removeSync(targetFolder)
 
-describe 'apm list', ->
+describe 'recrue list', ->
   [resourcePath, atomHome] = []
 
   beforeEach ->
     silenceOutput()
     spyOnToken()
 
-    resourcePath = temp.mkdirSync('apm-resource-path-')
+    resourcePath = temp.mkdirSync('recrue-resource-path-')
     atomPackages =
       'test-module':
         metadata:
@@ -43,7 +43,7 @@ describe 'apm list', ->
           version: '1.0.0'
     fs.writeFileSync(path.join(resourcePath, 'package.json'), JSON.stringify(_atomPackages: atomPackages))
     process.env.ATOM_RESOURCE_PATH = resourcePath
-    atomHome = temp.mkdirSync('apm-home-dir-')
+    atomHome = temp.mkdirSync('recrue-home-dir-')
     process.env.ATOM_HOME = atomHome
 
     createFakePackage "user",
@@ -55,7 +55,7 @@ describe 'apm list', ->
     createFakePackage "git",
       name: "git-package"
       version: "1.0.0"
-      apmInstallSource:
+      recrueInstallSource:
         type: "git"
         source: "git+ssh://git@github.com:user/repo.git"
         sha: "abcdef1234567890"
@@ -91,13 +91,13 @@ describe 'apm list', ->
   it 'lists packages in json format when --json is passed', ->
     listPackages ['--json'], ->
       json = JSON.parse(console.log.argsForCall[0][0])
-      apmInstallSource =
+      recrueInstallSource =
         type: 'git'
         source: 'git+ssh://git@github.com:user/repo.git'
         sha: 'abcdef1234567890'
       expect(json.core).toEqual [name: 'test-module', version: '1.0.0']
       expect(json.dev).toEqual [name: 'dev-package', version: '1.0.0']
-      expect(json.git).toEqual [name: 'git-package', version: '1.0.0', apmInstallSource: apmInstallSource]
+      expect(json.git).toEqual [name: 'git-package', version: '1.0.0', recrueInstallSource: recrueInstallSource]
       expect(json.user).toEqual [name: 'user-package', version: '1.0.0']
 
   describe 'when a section is empty', ->

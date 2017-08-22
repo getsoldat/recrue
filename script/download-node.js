@@ -34,7 +34,7 @@ var downloadFileToLocation = function(url, filename, callback) {
 };
 
 var downloadTarballAndExtract = function(url, location, callback) {
-  var tempPath = temp.mkdirSync('apm-node-');
+  var tempPath = temp.mkdirSync('recrue-node-');
   var stream = tar.Extract({
     path: tempPath
   });

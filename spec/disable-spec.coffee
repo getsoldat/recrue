@@ -4,15 +4,15 @@ path = require 'path'
 temp = require 'temp'
 CSON = require 'season'
 
-apm = require '../lib/apm-cli'
+recrue = require '../lib/recrue-cli'
 
-describe 'apm disable', ->
+describe 'recrue disable', ->
   beforeEach ->
     silenceOutput()
     spyOnToken()
 
   it 'disables an enabled package', ->
-    atomHome = temp.mkdirSync('apm-home-dir-')
+    atomHome = temp.mkdirSync('recrue-home-dir-')
     process.env.ATOM_HOME = atomHome
     callback = jasmine.createSpy('callback')
     configFilePath = path.join(atomHome, 'config.cson')
@@ -31,7 +31,7 @@ describe 'apm disable', ->
     wrench.copyDirSyncRecursive(path.join(packageSrcPath, 'test-module-three'), path.join(packagesPath, 'test-module-three'))
 
     runs ->
-      apm.run(['disable', 'test-module-two', 'not-installed', 'test-module-three'], callback)
+      recrue.run(['disable', 'test-module-two', 'not-installed', 'test-module-three'], callback)
 
     waitsFor 'waiting for disable to complete', ->
       callback.callCount > 0
@@ -51,7 +51,7 @@ describe 'apm disable', ->
           ]
 
   it 'does nothing if a package is already disabled', ->
-    atomHome = temp.mkdirSync('apm-home-dir-')
+    atomHome = temp.mkdirSync('recrue-home-dir-')
     process.env.ATOM_HOME = atomHome
     callback = jasmine.createSpy('callback')
     configFilePath = path.join(atomHome, 'config.cson')
@@ -66,7 +66,7 @@ describe 'apm disable', ->
         ]
 
     runs ->
-      apm.run(['disable', 'vim-mode', 'metrics'], callback)
+      recrue.run(['disable', 'vim-mode', 'metrics'], callback)
 
     waitsFor 'waiting for disable to complete', ->
       callback.callCount > 0
@@ -83,12 +83,12 @@ describe 'apm disable', ->
           ]
 
   it 'produces an error if config.cson doesn\'t exist', ->
-    atomHome = temp.mkdirSync('apm-home-dir-')
+    atomHome = temp.mkdirSync('recrue-home-dir-')
     process.env.ATOM_HOME = atomHome
     callback = jasmine.createSpy('callback')
 
     runs ->
-      apm.run(['disable', 'vim-mode'], callback)
+      recrue.run(['disable', 'vim-mode'], callback)
 
     waitsFor 'waiting for disable to complete', ->
       callback.callCount > 0
@@ -98,12 +98,12 @@ describe 'apm disable', ->
       expect(console.error.argsForCall[0][0].length).toBeGreaterThan 0
 
   it 'complains if user supplies no packages', ->
-    atomHome = temp.mkdirSync('apm-home-dir-')
+    atomHome = temp.mkdirSync('recrue-home-dir-')
     process.env.ATOM_HOME = atomHome
     callback = jasmine.createSpy('callback')
 
     runs ->
-      apm.run(['disable'], callback)
+      recrue.run(['disable'], callback)
 
     waitsFor 'waiting for disable to complete', ->
       callback.callCount > 0

@@ -3,9 +3,9 @@ fs = require 'fs-plus'
 temp = require 'temp'
 express = require 'express'
 http = require 'http'
-apm = require '../lib/apm-cli'
+recrue = require '../lib/recrue-cli'
 
-describe 'apm publish', ->
+describe 'recrue publish', ->
   [server] = []
 
   beforeEach ->
@@ -16,7 +16,7 @@ describe 'apm publish', ->
     server =  http.createServer(app)
     server.listen(3000)
 
-    atomHome = temp.mkdirSync('apm-home-dir-')
+    atomHome = temp.mkdirSync('recrue-home-dir-')
     process.env.ATOM_HOME = atomHome
     process.env.ATOM_API_URL = "http://localhost:3000/api"
     process.env.ATOM_RESOURCE_PATH = temp.mkdirSync('atom-resource-path-')
@@ -25,11 +25,11 @@ describe 'apm publish', ->
     server.close()
 
   it "validates the package's package.json file", ->
-    packageToPublish = temp.mkdirSync('apm-test-package-')
+    packageToPublish = temp.mkdirSync('recrue-test-package-')
     fs.writeFileSync(path.join(packageToPublish, 'package.json'), '}{')
     process.chdir(packageToPublish)
     callback = jasmine.createSpy('callback')
-    apm.run(['publish'], callback)
+    recrue.run(['publish'], callback)
 
     waitsFor 'waiting for publish to complete', 600000, ->
       callback.callCount is 1
@@ -38,14 +38,14 @@ describe 'apm publish', ->
       expect(callback.mostRecentCall.args[0].message).toBe 'Error parsing package.json file: Unexpected token } in JSON at position 0'
 
   it "validates the package is in a Git repository", ->
-    packageToPublish = temp.mkdirSync('apm-test-package-')
+    packageToPublish = temp.mkdirSync('recrue-test-package-')
     metadata =
       name: 'test'
       version: '1.0.0'
     fs.writeFileSync(path.join(packageToPublish, 'package.json'), JSON.stringify(metadata))
     process.chdir(packageToPublish)
     callback = jasmine.createSpy('callback')
-    apm.run(['publish'], callback)
+    recrue.run(['publish'], callback)
 
     waitsFor 'waiting for publish to complete', 600000, ->
       callback.callCount is 1
@@ -54,7 +54,7 @@ describe 'apm publish', ->
       expect(callback.mostRecentCall.args[0].message).toBe 'Package must be in a Git repository before publishing: https://help.github.com/articles/create-a-repo'
 
   it "validates the engines.atom range in the package.json file", ->
-    packageToPublish = temp.mkdirSync('apm-test-package-')
+    packageToPublish = temp.mkdirSync('recrue-test-package-')
     metadata =
       name: 'test'
       version: '1.0.0'
@@ -63,7 +63,7 @@ describe 'apm publish', ->
     fs.writeFileSync(path.join(packageToPublish, 'package.json'), JSON.stringify(metadata))
     process.chdir(packageToPublish)
     callback = jasmine.createSpy('callback')
-    apm.run(['publish'], callback)
+    recrue.run(['publish'], callback)
 
     waitsFor 'waiting for publish to complete', 600000, ->
       callback.callCount is 1
@@ -72,7 +72,7 @@ describe 'apm publish', ->
       expect(callback.mostRecentCall.args[0].message).toBe 'The Atom engine range in the package.json file is invalid: ><>'
 
   it "validates the dependency semver ranges in the package.json file", ->
-    packageToPublish = temp.mkdirSync('apm-test-package-')
+    packageToPublish = temp.mkdirSync('recrue-test-package-')
     metadata =
       name: 'test'
       version: '1.0.0'
@@ -85,7 +85,7 @@ describe 'apm publish', ->
     fs.writeFileSync(path.join(packageToPublish, 'package.json'), JSON.stringify(metadata))
     process.chdir(packageToPublish)
     callback = jasmine.createSpy('callback')
-    apm.run(['publish'], callback)
+    recrue.run(['publish'], callback)
 
     waitsFor 'waiting for publish to complete', 600000, ->
       callback.callCount is 1
@@ -94,7 +94,7 @@ describe 'apm publish', ->
       expect(callback.mostRecentCall.args[0].message).toBe 'The foo dependency range in the package.json file is invalid: ^^'
 
   it "validates the dev dependency semver ranges in the package.json file", ->
-    packageToPublish = temp.mkdirSync('apm-test-package-')
+    packageToPublish = temp.mkdirSync('recrue-test-package-')
     metadata =
       name: 'test'
       version: '1.0.0'
@@ -109,7 +109,7 @@ describe 'apm publish', ->
     fs.writeFileSync(path.join(packageToPublish, 'package.json'), JSON.stringify(metadata))
     process.chdir(packageToPublish)
     callback = jasmine.createSpy('callback')
-    apm.run(['publish'], callback)
+    recrue.run(['publish'], callback)
 
     waitsFor 'waiting for publish to complete', 600000, ->
       callback.callCount is 1

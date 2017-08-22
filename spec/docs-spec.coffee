@@ -1,10 +1,10 @@
 path = require 'path'
 express = require 'express'
 http = require 'http'
-apm = require '../lib/apm-cli'
+recrue = require '../lib/recrue-cli'
 Docs = require('../lib/docs')
 
-describe 'apm docs', ->
+describe 'recrue docs', ->
   server = null
 
   beforeEach ->
@@ -26,7 +26,7 @@ describe 'apm docs', ->
 
   it 'logs an error if the package has no URL', ->
     callback = jasmine.createSpy('callback')
-    apm.run(['docs', 'install'], callback)
+    recrue.run(['docs', 'install'], callback)
 
     waitsFor 'waiting for command to complete', ->
       callback.callCount > 0
@@ -36,7 +36,7 @@ describe 'apm docs', ->
 
   it "logs an error if the package name is missing or empty", ->
     callback = jasmine.createSpy('callback')
-    apm.run(['docs'], callback)
+    recrue.run(['docs'], callback)
 
     waitsFor 'waiting for command to complete', ->
       callback.callCount > 0
@@ -48,7 +48,7 @@ describe 'apm docs', ->
   it "prints the package URL if called with the --print option (and does not open it)", ->
     spyOn(Docs.prototype, 'openRepositoryUrl')
     callback = jasmine.createSpy('callback')
-    apm.run(['docs', '--print', 'wrap-guide'], callback)
+    recrue.run(['docs', '--print', 'wrap-guide'], callback)
 
     waitsFor 'waiting for command to complete', ->
       callback.callCount > 0
@@ -62,7 +62,7 @@ describe 'apm docs', ->
     Docs = require('../lib/docs')
     spyOn(Docs.prototype, 'openRepositoryUrl')
     callback = jasmine.createSpy('callback')
-    apm.run(['docs', '-p', 'wrap-guide'], callback)
+    recrue.run(['docs', '-p', 'wrap-guide'], callback)
 
     waitsFor 'waiting for command to complete', ->
       callback.callCount > 0
@@ -75,7 +75,7 @@ describe 'apm docs', ->
   it "opens the package URL", ->
     spyOn(Docs.prototype, 'openRepositoryUrl')
     callback = jasmine.createSpy('callback')
-    apm.run(['docs', 'wrap-guide'], callback)
+    recrue.run(['docs', 'wrap-guide'], callback)
 
     waitsFor 'waiting for command to complete', ->
       callback.callCount > 0

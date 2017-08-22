@@ -2,16 +2,16 @@ child_process = require 'child_process'
 fs = require 'fs'
 path = require 'path'
 temp = require 'temp'
-apm = require '../lib/apm-cli'
+recrue = require '../lib/recrue-cli'
 
-describe "apm test", ->
+describe "recrue test", ->
   [specPath] = []
 
   beforeEach ->
     silenceOutput()
     spyOnToken()
 
-    currentDir = temp.mkdirSync('apm-init-')
+    currentDir = temp.mkdirSync('recrue-init-')
     spyOn(process, 'cwd').andReturn(currentDir)
     specPath = path.join(currentDir, 'spec')
 
@@ -22,7 +22,7 @@ describe "apm test", ->
       stderr:
         on: ->
       on: ->
-    apm.run(['test'])
+    recrue.run(['test'])
 
     waitsFor 'waiting for test to complete', ->
       atomSpawn.callCount is 1
@@ -52,7 +52,7 @@ describe "apm test", ->
           on: ->
         on: atomReturnFn
         removeListener: -> # no op
-      apm.run(['test'], callback)
+      recrue.run(['test'], callback)
 
     describe 'successfully', ->
       beforeEach -> returnWithCode('close', 0)

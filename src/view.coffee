@@ -3,7 +3,7 @@ yargs = require 'yargs'
 semver = require 'semver'
 
 Command = require './command'
-config = require './apm'
+config = require './recrue'
 request = require './request'
 tree = require './tree'
 
@@ -15,7 +15,7 @@ class View extends Command
     options = yargs(argv).wrap(100)
     options.usage """
 
-      Usage: apm view <package_name>
+      Usage: recrue view <package_name>
 
       View information about a package/theme in the atom.io registry.
     """
@@ -100,7 +100,7 @@ class View extends Command
         tree(items)
 
         console.log()
-        console.log "Run `apm install #{pack.name}` to install this package."
+        console.log "Run `recrue install #{pack.name}` to install this package."
         console.log()
 
       callback()

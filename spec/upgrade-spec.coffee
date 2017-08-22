@@ -4,22 +4,22 @@ temp = require 'temp'
 express = require 'express'
 http = require 'http'
 wrench = require 'wrench'
-apm = require '../lib/apm-cli'
+recrue = require '../lib/recrue-cli'
 
-apmRun = (args, callback) ->
+recrueRun = (args, callback) ->
   ran = false
-  apm.run args, -> ran = true
-  waitsFor "waiting for apm #{args.join(' ')}", 60000, -> ran
+  recrue.run args, -> ran = true
+  waitsFor "waiting for recrue #{args.join(' ')}", 60000, -> ran
   runs callback
 
-describe "apm upgrade", ->
+describe "recrue upgrade", ->
   [atomApp, atomHome, packagesDir, server] = []
 
   beforeEach ->
     spyOnToken()
     silenceOutput()
 
-    atomHome = temp.mkdirSync('apm-home-dir-')
+    atomHome = temp.mkdirSync('recrue-home-dir-')
     process.env.ATOM_HOME = atomHome
 
     app = express()
@@ -32,8 +32,8 @@ describe "apm upgrade", ->
     server =  http.createServer(app)
     server.listen(3000)
 
-    atomHome = temp.mkdirSync('apm-home-dir-')
-    atomApp = temp.mkdirSync('apm-app-dir-')
+    atomHome = temp.mkdirSync('recrue-home-dir-')
+    atomApp = temp.mkdirSync('recrue-app-dir-')
     packagesDir = path.join(atomHome, 'packages')
     process.env.ATOM_HOME = atomHome
     process.env.ATOM_ELECTRON_URL = "http://localhost:3000/node"
@@ -50,7 +50,7 @@ describe "apm upgrade", ->
     fs.writeFileSync(path.join(packagesDir, 'not-published', 'package.json'), JSON.stringify({name: 'not-published', version: '1.0', repository: 'https://github.com/a/b'}))
 
     callback = jasmine.createSpy('callback')
-    apm.run(['upgrade', '--list', '--no-color'], callback)
+    recrue.run(['upgrade', '--list', '--no-color'], callback)
 
     waitsFor 'waiting for upgrade to complete', 600000, ->
       callback.callCount > 0
@@ -63,7 +63,7 @@ describe "apm upgrade", ->
     fs.writeFileSync(path.join(packagesDir, 'test-module', 'package.json'), JSON.stringify({name: 'test-module', version: '0.3.0', repository: 'https://github.com/a/b'}))
 
     callback = jasmine.createSpy('callback')
-    apm.run(['upgrade', '--list', '--no-color'], callback)
+    recrue.run(['upgrade', '--list', '--no-color'], callback)
 
     waitsFor 'waiting for upgrade to complete', 600000, ->
       callback.callCount > 0
@@ -76,7 +76,7 @@ describe "apm upgrade", ->
     fs.writeFileSync(path.join(packagesDir, 'multi-module', 'package.json'), JSON.stringify({name: 'multi-module', version: '0.1.0', repository: 'https://github.com/a/b'}))
 
     callback = jasmine.createSpy('callback')
-    apm.run(['upgrade', '--list', '--no-color'], callback)
+    recrue.run(['upgrade', '--list', '--no-color'], callback)
 
     waitsFor 'waiting for upgrade to complete', 600000, ->
       callback.callCount > 0
@@ -89,7 +89,7 @@ describe "apm upgrade", ->
     fs.writeFileSync(path.join(packagesDir, 'multi-module', 'package.json'), JSON.stringify({name: 'multi-module', version: '0.3.0', repository: 'https://github.com/a/b'}))
 
     callback = jasmine.createSpy('callback')
-    apm.run(['upgrade', '--list', '--no-color'], callback)
+    recrue.run(['upgrade', '--list', '--no-color'], callback)
 
     waitsFor 'waiting for upgrade to complete', 600000, ->
       callback.callCount > 0
@@ -102,7 +102,7 @@ describe "apm upgrade", ->
     fs.writeFileSync(path.join(packagesDir, 'different-repo', 'package.json'), JSON.stringify({name: 'different-repo', version: '0.3.0', repository: 'https://github.com/world/hello'}))
 
     callback = jasmine.createSpy('callback')
-    apm.run(['upgrade', '--list', '--no-color'], callback)
+    recrue.run(['upgrade', '--list', '--no-color'], callback)
 
     waitsFor 'waiting for upgrade to complete', 600000, ->
       callback.callCount > 0
@@ -116,7 +116,7 @@ describe "apm upgrade", ->
     fs.writeFileSync(path.join(packagesDir, 'different-repo', 'package.json'), JSON.stringify({name: 'different-repo', version: '0.3.0', repository: 'https://github.com/world/hello'}))
 
     callback = jasmine.createSpy('callback')
-    apm.run(['upgrade', '--list', '--no-color', 'different-repo'], callback)
+    recrue.run(['upgrade', '--list', '--no-color', 'different-repo'], callback)
 
     waitsFor 'waiting for upgrade to complete', 600000, ->
       callback.callCount > 0
@@ -131,7 +131,7 @@ describe "apm upgrade", ->
     fs.writeFileSync(path.join(packagesDir, 'different-repo', 'package.json'), JSON.stringify({name: 'different-repo', version: '0.3.0'}))
 
     callback = jasmine.createSpy('callback')
-    apm.run(['upgrade', '--list', '--no-color'], callback)
+    recrue.run(['upgrade', '--list', '--no-color'], callback)
 
     waitsFor 'waiting for upgrade to complete', 600000, ->
       callback.callCount > 0
@@ -143,7 +143,7 @@ describe "apm upgrade", ->
   it "logs an error when the installed location of Atom cannot be found", ->
     process.env.ATOM_RESOURCE_PATH = '/tmp/atom/is/not/installed/here'
     callback = jasmine.createSpy('callback')
-    apm.run(['upgrade', '--list', '--no-color'], callback)
+    recrue.run(['upgrade', '--list', '--no-color'], callback)
 
     waitsFor 'waiting for upgrade to complete', 600000, ->
       callback.callCount > 0
@@ -157,7 +157,7 @@ describe "apm upgrade", ->
     fs.writeFileSync(path.join(packagesDir, 'multi-module', 'package.json'), JSON.stringify({name: 'multi-module', version: '0.1.0', repository: 'https://github.com/a/b'}))
 
     callback = jasmine.createSpy('callback')
-    apm.run(['upgrade', '--list', '--no-color'], callback)
+    recrue.run(['upgrade', '--list', '--no-color'], callback)
 
     waitsFor 'waiting for upgrade to complete', 600000, ->
       callback.callCount > 0
@@ -177,18 +177,18 @@ describe "apm upgrade", ->
       gitRepo = path.join(__dirname, "fixtures", "test-git-repo.git")
       cloneUrl = "file://#{gitRepo}"
 
-      apmRun ["install", cloneUrl], ->
+      recrueRun ["install", cloneUrl], ->
         pkgJsonPath = path.join(process.env.ATOM_HOME, 'packages', 'test-git-repo', 'package.json')
         json = JSON.parse(fs.readFileSync(pkgJsonPath), 'utf8')
-        json.apmInstallSource.sha = 'abcdef1234567890'
+        json.recrueInstallSource.sha = 'abcdef1234567890'
         fs.writeFileSync pkgJsonPath, JSON.stringify(json)
 
     it 'shows an upgrade plan', ->
-      apmRun ['upgrade', '--list', '--no-color'], ->
+      recrueRun ['upgrade', '--list', '--no-color'], ->
         text = console.log.argsForCall.map((arr) -> arr.join(' ')).join("\n")
         expect(text).toMatch /Available \(1\).*\n.*test-git-repo abcdef12 -> 8ae43234/
 
     it 'updates to the latest sha', ->
-      apmRun ['upgrade', '-c', 'false', 'test-git-repo'], ->
+      recrueRun ['upgrade', '-c', 'false', 'test-git-repo'], ->
         json = JSON.parse(fs.readFileSync(pkgJsonPath), 'utf8')
-        expect(json.apmInstallSource.sha).toBe '8ae432341ac6708aff9bb619eb015da14e9d0c0f'
+        expect(json.recrueInstallSource.sha).toBe '8ae432341ac6708aff9bb619eb015da14e9d0c0f'

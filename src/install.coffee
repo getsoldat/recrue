@@ -10,7 +10,7 @@ semver = require 'semver'
 temp = require 'temp'
 hostedGitInfo = require 'hosted-git-info'
 
-config = require './apm'
+config = require './recrue'
 Command = require './command'
 fs = require './fs'
 RebuildModuleCache = require './rebuild-module-cache'
@@ -31,12 +31,12 @@ class Install extends Command
     options = yargs(argv).wrap(100)
     options.usage """
 
-      Usage: apm install [<package_name>...]
-             apm install <package_name>@<package_version>
-             apm install <git_remote>
-             apm install <github_username>/<github_project>
-             apm install --packages-file my-packages.txt
-             apm i (with any of the previous argument usage)
+      Usage: recrue install [<package_name>...]
+             recrue install <package_name>@<package_version>
+             recrue install <git_remote>
+             recrue install <github_username>/<github_project>
+             recrue install --packages-file my-packages.txt
+             recrue i (with any of the previous argument usage)
 
       Install the given Atom package to ~/.atom/packages/<package_name>.
 
@@ -113,7 +113,7 @@ class Install extends Command
     installOptions.streaming = true if @verbose
 
     if installGlobally
-      installDirectory = temp.mkdirSync('apm-install-dir-')
+      installDirectory = temp.mkdirSync('recrue-install-dir-')
       nodeModulesDirectory = path.join(installDirectory, 'node_modules')
       fs.makeTreeSync(nodeModulesDirectory)
       installOptions.cwd = installDirectory
@@ -175,7 +175,7 @@ class Install extends Command
 
     message += """
 
-      Run apm -v after installing Git to see what version has been detected.
+      Run recrue -v after installing Git to see what version has been detected.
     """
 
     message
@@ -534,7 +534,7 @@ class Install extends Command
         next(err, data)
 
     tasks.push (data, next) ->
-      data.metadata.apmInstallSource =
+      data.metadata.recrueInstallSource =
         type: "git"
         source: packageUrl
         sha: data.sha
@@ -638,7 +638,7 @@ class Install extends Command
           if isBundledPackage
             console.error """
               The #{name} package is bundled with Atom and should not be explicitly installed.
-              You can run `apm uninstall #{name}` to uninstall it and then the version bundled
+              You can run `recrue uninstall #{name}` to uninstall it and then the version bundled
               with Atom will be used.
             """.yellow
           @installRegisteredPackage({name, version}, options, nextInstallStep)

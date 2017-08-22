@@ -2,7 +2,7 @@ yargs = require 'yargs'
 open = require 'open'
 
 View = require './view'
-config = require './apm'
+config = require './recrue'
 
 module.exports =
 class Docs extends View
@@ -12,7 +12,7 @@ class Docs extends View
     options = yargs(argv).wrap(100)
     options.usage """
 
-      Usage: apm docs [options] <package_name>
+      Usage: recrue docs [options] <package_name>
 
       Open a package's homepage in the default browser.
     """

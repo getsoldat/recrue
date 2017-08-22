@@ -6,7 +6,7 @@ yargs = require 'yargs'
 
 Command = require './command'
 fs = require './fs'
-config = require './apm'
+config = require './recrue'
 tree = require './tree'
 {getRepository} = require "./packages"
 
@@ -26,12 +26,12 @@ class List extends Command
     options = yargs(argv).wrap(100)
     options.usage """
 
-      Usage: apm list
-             apm list --themes
-             apm list --packages
-             apm list --installed
-             apm list --installed --bare > my-packages.txt
-             apm list --json
+      Usage: recrue list
+             recrue list --themes
+             recrue list --packages
+             recrue list --installed
+             recrue list --installed --bare > my-packages.txt
+             recrue list --json
 
       List all the installed packages and also the packages bundled with Atom.
     """
@@ -57,9 +57,9 @@ class List extends Command
       tree packages, (pack) =>
         packageLine = pack.name
         packageLine += "@#{pack.version}" if pack.version?
-        if pack.apmInstallSource?.type is 'git'
+        if pack.recrueInstallSource?.type is 'git'
           repo = getRepository(pack)
-          shaLine = "##{pack.apmInstallSource.sha.substr(0, 8)}"
+          shaLine = "##{pack.recrueInstallSource.sha.substr(0, 8)}"
           shaLine = repo + shaLine if repo?
           packageLine += " (#{shaLine})".grey
         packageLine += ' (disabled)' if @isPackageDisabled(pack.name)
@@ -91,7 +91,7 @@ class List extends Command
 
   listUserPackages: (options, callback) ->
     userPackages = @listPackages(@userPackagesDirectory, options)
-      .filter (pack) -> not pack.apmInstallSource
+      .filter (pack) -> not pack.recrueInstallSource
     unless options.argv.bare or options.argv.json
       console.log "Community Packages (#{userPackages.length})".cyan, "#{@userPackagesDirectory}"
     callback?(null, userPackages)
@@ -107,7 +107,7 @@ class List extends Command
 
   listGitPackages: (options, callback) ->
     gitPackages = @listPackages(@userPackagesDirectory, options)
-      .filter (pack) -> pack.apmInstallSource?.type is 'git'
+      .filter (pack) -> pack.recrueInstallSource?.type is 'git'
     if gitPackages.length > 0
       unless options.argv.bare or options.argv.json
         console.log "Git Packages (#{gitPackages.length})".cyan, "#{@userPackagesDirectory}"

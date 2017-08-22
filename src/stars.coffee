@@ -2,7 +2,7 @@ _ = require 'underscore-plus'
 yargs = require 'yargs'
 
 Command = require './command'
-config = require './apm'
+config = require './recrue'
 Install = require './install'
 Login = require './login'
 request = require './request'
@@ -16,10 +16,10 @@ class Stars extends Command
     options = yargs(argv).wrap(100)
     options.usage """
 
-      Usage: apm stars
-             apm stars --install
-             apm stars --user thedaniel
-             apm stars --themes
+      Usage: recrue stars
+             recrue stars --install
+             recrue stars --user thedaniel
+             recrue stars --themes
 
       List or install starred Atom packages and themes.
     """
@@ -83,7 +83,7 @@ class Stars extends Command
       label
 
     console.log()
-    console.log "Use `apm stars --install` to install them all or visit #{'http://atom.io/packages'.underline} to read more about them."
+    console.log "Use `recrue stars --install` to install them all or visit #{'http://atom.io/packages'.underline} to read more about them."
     console.log()
     callback()
 

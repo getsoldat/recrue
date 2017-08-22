@@ -18,22 +18,22 @@ module.exports =
       path.join(@getHomeDirectory(), '.multirust')
 
   getCacheDirectory: ->
-    path.join(@getAtomDirectory(), '.apm')
+    path.join(@getAtomDirectory(), '.recrue')
 
   getResourcePath: (callback) ->
     if process.env.ATOM_RESOURCE_PATH
       return process.nextTick -> callback(process.env.ATOM_RESOURCE_PATH)
 
-    apmFolder = path.resolve(__dirname, '..')
-    appFolder = path.dirname(apmFolder)
-    if path.basename(apmFolder) is 'apm' and path.basename(appFolder) is 'app'
+    recrueFolder = path.resolve(__dirname, '..')
+    appFolder = path.dirname(recrueFolder)
+    if path.basename(recrueFolder) is 'recrue' and path.basename(appFolder) is 'app'
       asarPath = "#{appFolder}.asar"
       if fs.existsSync(asarPath)
         return process.nextTick -> callback(asarPath)
 
-    apmFolder = path.resolve(__dirname, '..', '..', '..')
-    appFolder = path.dirname(apmFolder)
-    if path.basename(apmFolder) is 'apm' and path.basename(appFolder) is 'app'
+    recrueFolder = path.resolve(__dirname, '..', '..', '..')
+    appFolder = path.dirname(recrueFolder)
+    if path.basename(recrueFolder) is 'recrue' and path.basename(appFolder) is 'app'
       asarPath = "#{appFolder}.asar"
       if fs.existsSync(asarPath)
         return process.nextTick -> callback(asarPath)
@@ -68,10 +68,10 @@ module.exports =
       else process.env.ATOM_ARCH ? process.arch
 
   getUserConfigPath: ->
-    path.resolve(@getAtomDirectory(), '.apmrc')
+    path.resolve(@getAtomDirectory(), '.recruerc')
 
   getGlobalConfigPath: ->
-    path.resolve(@getAtomDirectory(), '.apm', '.apmrc')
+    path.resolve(@getAtomDirectory(), '.recrue', '.recruerc')
 
   isWin32: ->
     process.platform is 'win32'
@@ -106,10 +106,10 @@ module.exports =
     try
       fs.writeFileSync @getGlobalConfigPath(), """
         ; This file is auto-generated and should not be edited since any
-        ; modifications will be lost the next time any apm command is run.
+        ; modifications will be lost the next time any recrue command is run.
         ;
-        ; You should instead edit your .apmrc config located in ~/.atom/.apmrc
+        ; You should instead edit your .recruerc config located in ~/.atom/.recruerc
         cache = #{@getCacheDirectory()}
-        ; Hide progress-bar to prevent npm from altering apm console output.
+        ; Hide progress-bar to prevent npm from altering recrue console output.
         progress = false
       """

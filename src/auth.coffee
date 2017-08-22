@@ -28,7 +28,7 @@ module.exports =
 
       callback """
         No Atom.io API token in keychain
-        Run `apm login` or set the `ATOM_ACCESS_TOKEN` environment variable.
+        Run `recrue login` or set the `ATOM_ACCESS_TOKEN` environment variable.
       """
 
   # Save the given token to the keychain.

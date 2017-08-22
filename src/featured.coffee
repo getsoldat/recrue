@@ -2,7 +2,7 @@ _ = require 'underscore-plus'
 yargs = require 'yargs'
 
 Command = require './command'
-config = require './apm'
+config = require './recrue'
 request = require './request'
 tree = require './tree'
 
@@ -14,9 +14,9 @@ class Featured extends Command
     options = yargs(argv).wrap(100)
     options.usage """
 
-      Usage: apm featured
-             apm featured --themes
-             apm featured --compatible 0.49.0
+      Usage: recrue featured
+             recrue featured --themes
+             recrue featured --compatible 0.49.0
 
       List the Atom packages and themes that are currently featured in the
       atom.io registry.
@@ -76,7 +76,7 @@ class Featured extends Command
           label
 
         console.log()
-        console.log "Use `apm install` to install them or visit #{'http://atom.io/packages'.underline} to read more about them."
+        console.log "Use `recrue install` to install them or visit #{'http://atom.io/packages'.underline} to read more about them."
         console.log()
 
       callback()

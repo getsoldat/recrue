@@ -1,9 +1,9 @@
 path = require 'path'
 fs = require 'fs-plus'
 temp = require 'temp'
-apm = require '../lib/apm-cli'
+recrue = require '../lib/recrue-cli'
 
-describe 'apm uninstall', ->
+describe 'recrue uninstall', ->
   beforeEach ->
     silenceOutput()
     spyOnToken()
@@ -12,7 +12,7 @@ describe 'apm uninstall', ->
   describe 'when no package is specified', ->
     it 'logs an error and exits', ->
       callback = jasmine.createSpy('callback')
-      apm.run(['uninstall'], callback)
+      recrue.run(['uninstall'], callback)
 
       waitsFor 'waiting for command to complete', ->
         callback.callCount > 0
@@ -24,7 +24,7 @@ describe 'apm uninstall', ->
   describe 'when the package is not installed', ->
     it 'ignores the package', ->
       callback = jasmine.createSpy('callback')
-      apm.run(['uninstall', 'a-package-that-does-not-exist'], callback)
+      recrue.run(['uninstall', 'a-package-that-does-not-exist'], callback)
 
       waitsFor 'waiting for command to complete', ->
         callback.callCount > 0
@@ -34,7 +34,7 @@ describe 'apm uninstall', ->
 
   describe 'when the package is installed', ->
     it 'deletes the package', ->
-      atomHome = temp.mkdirSync('apm-home-dir-')
+      atomHome = temp.mkdirSync('recrue-home-dir-')
       packagePath = path.join(atomHome, 'packages', 'test-package')
       fs.makeTreeSync(path.join(packagePath, 'lib'))
       fs.writeFileSync(path.join(packagePath, 'package.json'), "{}")
@@ -42,7 +42,7 @@ describe 'apm uninstall', ->
 
       expect(fs.existsSync(packagePath)).toBeTruthy()
       callback = jasmine.createSpy('callback')
-      apm.run(['uninstall', 'test-package'], callback)
+      recrue.run(['uninstall', 'test-package'], callback)
 
       waitsFor 'waiting for command to complete', ->
         callback.callCount > 0
@@ -52,7 +52,7 @@ describe 'apm uninstall', ->
 
     describe "--dev", ->
       it "deletes the packages from the dev packages folder", ->
-        atomHome = temp.mkdirSync('apm-home-dir-')
+        atomHome = temp.mkdirSync('recrue-home-dir-')
         packagePath = path.join(atomHome, 'packages', 'test-package')
         fs.makeTreeSync(path.join(packagePath, 'lib'))
         fs.writeFileSync(path.join(packagePath, 'package.json'), "{}")
@@ -63,7 +63,7 @@ describe 'apm uninstall', ->
 
         expect(fs.existsSync(packagePath)).toBeTruthy()
         callback = jasmine.createSpy('callback')
-        apm.run(['uninstall', 'test-package', '--dev'], callback)
+        recrue.run(['uninstall', 'test-package', '--dev'], callback)
 
         waitsFor 'waiting for command to complete', ->
           callback.callCount > 0
@@ -74,7 +74,7 @@ describe 'apm uninstall', ->
 
     describe "--hard", ->
       it "deletes the packages from the both packages folders", ->
-        atomHome = temp.mkdirSync('apm-home-dir-')
+        atomHome = temp.mkdirSync('recrue-home-dir-')
         packagePath = path.join(atomHome, 'packages', 'test-package')
         fs.makeTreeSync(path.join(packagePath, 'lib'))
         fs.writeFileSync(path.join(packagePath, 'package.json'), "{}")
@@ -85,7 +85,7 @@ describe 'apm uninstall', ->
 
         expect(fs.existsSync(packagePath)).toBeTruthy()
         callback = jasmine.createSpy('callback')
-        apm.run(['uninstall', 'test-package', '--hard'], callback)
+        recrue.run(['uninstall', 'test-package', '--hard'], callback)
 
         waitsFor 'waiting for command to complete', ->
           callback.callCount > 0

@@ -2,7 +2,7 @@ path = require 'path'
 async = require 'async'
 yargs = require 'yargs'
 Command = require './command'
-config = require './apm'
+config = require './recrue'
 fs = require './fs'
 
 module.exports =
@@ -16,7 +16,7 @@ class RebuildModuleCache extends Command
     options = yargs(argv).wrap(100)
     options.usage """
 
-      Usage: apm rebuild-module-cache
+      Usage: recrue rebuild-module-cache
 
       Rebuild the module cache for all the packages installed to
       ~/.atom/packages

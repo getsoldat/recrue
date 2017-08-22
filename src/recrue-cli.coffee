@@ -10,7 +10,7 @@ wordwrap = require 'wordwrap'
 # Enable "require" scripts in asar archives
 require 'asar-require'
 
-config = require './apm'
+config = require './recrue'
 fs = require './fs'
 git = require './git'
 
@@ -67,14 +67,14 @@ parseOptions = (args=[]) ->
 
     recrue - Soldat Package Manager powered by https://soldat.tv
 
-    Usage: apm <command>
+    Usage: recrue <command>
 
     where <command> is one of:
     #{wordwrap(4, 80)(Object.keys(commands).sort().join(', '))}.
 
-    Run `apm help <command>` to see the more details about a specific command.
+    Run `recrue help <command>` to see the more details about a specific command.
   """
-  options.alias('v', 'version').describe('version', 'Print the apm version')
+  options.alias('v', 'version').describe('version', 'Print the recrue version')
   options.alias('h', 'help').describe('help', 'Print this usage message')
   options.boolean('color').default('color', true).describe('color', 'Enable colored output')
   options.command = options.argv._[0]
@@ -94,7 +94,7 @@ showHelp = (options) ->
   console.error(help)
 
 printVersions = (args, callback) ->
-  apmVersion =  require('../package.json').version ? ''
+  recrueVersion =  require('../package.json').version ? ''
   npmVersion = require('npm/package.json').version ? ''
   nodeVersion = process.versions.node ? ''
 
@@ -102,7 +102,7 @@ printVersions = (args, callback) ->
     git.getGitVersion (gitVersion) ->
       if args.json
         versions =
-          apm: apmVersion
+          recrue: recrueVersion
           npm: npmVersion
           node: nodeVersion
           python: pythonVersion
@@ -115,7 +115,7 @@ printVersions = (args, callback) ->
         pythonVersion ?= ''
         gitVersion ?= ''
         versions =  """
-          #{'apm'.red}  #{apmVersion.red}
+          #{'recrue'.red}  #{recrueVersion.red}
           #{'npm'.green}  #{npmVersion.green}
           #{'node'.blue} #{nodeVersion.blue} #{process.arch.blue}
           #{'python'.yellow} #{pythonVersion.yellow}

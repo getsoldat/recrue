@@ -8,7 +8,7 @@ semver = require 'semver'
 Git = require 'git-utils'
 
 Command = require './command'
-config = require './apm'
+config = require './recrue'
 fs = require './fs'
 Install = require './install'
 Packages = require './packages'
@@ -28,9 +28,9 @@ class Upgrade extends Command
     options = yargs(argv).wrap(100)
     options.usage """
 
-      Usage: apm upgrade
-             apm upgrade --list
-             apm upgrade [<package_name>...]
+      Usage: recrue upgrade
+             recrue upgrade --list
+             recrue upgrade [<package_name>...]
 
       Upgrade out of date packages installed to ~/.atom/packages
 
@@ -112,7 +112,7 @@ class Upgrade extends Command
         return callback(code) unless code is 0
         repo = Git.open(repoPath)
         sha = repo.getReferenceTarget(repo.getUpstreamBranch('refs/heads/master'))
-        if sha isnt pack.apmInstallSource.sha
+        if sha isnt pack.recrueInstallSource.sha
           callback(null, sha)
         else
           callback()
@@ -122,7 +122,7 @@ class Upgrade extends Command
 
   getAvailableUpdates: (packages, callback) ->
     getLatestVersionOrSha = (pack, done) =>
-      if pack.apmInstallSource?.type is 'git'
+      if pack.recrueInstallSource?.type is 'git'
         @getLatestSha pack, (err, sha) ->
           done(err, {pack, sha})
       else
@@ -149,8 +149,8 @@ class Upgrade extends Command
     for {pack, latestVersion} in updates
       do (pack, latestVersion) ->
         installCommands.push (callback) ->
-          if pack.apmInstallSource?.type is 'git'
-            commandArgs = [pack.apmInstallSource.source]
+          if pack.recrueInstallSource?.type is 'git'
+            commandArgs = [pack.recrueInstallSource.source]
           else
             commandArgs = ["#{pack.name}@#{latestVersion}"]
           commandArgs.unshift('--verbose') if verbose
@@ -188,15 +188,15 @@ class Upgrade extends Command
       else
         console.log "Package Updates Available".cyan + " (#{updates.length})"
         tree updates, ({pack, latestVersion, sha}) ->
-          {name, apmInstallSource, version} = pack
+          {name, recrueInstallSource, version} = pack
           name = name.yellow
           if sha?
-            version = apmInstallSource.sha.substr(0, 8).red
+            version = recrueInstallSource.sha.substr(0, 8).red
             latestVersion = sha.substr(0, 8).green
           else
             version = version.red
             latestVersion = latestVersion.green
-          latestVersion = latestVersion?.green or apmInstallSource?.sha?.green
+          latestVersion = latestVersion?.green or recrueInstallSource?.sha?.green
           "#{name} #{version} -> #{latestVersion}"
 
       return callback() if options.command is 'outdated'

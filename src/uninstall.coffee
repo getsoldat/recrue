@@ -6,7 +6,7 @@ yargs = require 'yargs'
 
 auth = require './auth'
 Command = require './command'
-config = require './apm'
+config = require './recrue'
 fs = require './fs'
 request = require './request'
 
@@ -18,7 +18,7 @@ class Uninstall extends Command
     options = yargs(argv).wrap(100)
     options.usage """
 
-      Usage: apm uninstall <package_name>...
+      Usage: recrue uninstall <package_name>...
 
       Delete the installed package(s) from the ~/.atom/packages directory.
     """

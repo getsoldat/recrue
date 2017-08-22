@@ -1,19 +1,19 @@
 path = require 'path'
 fs = require 'fs-plus'
 temp = require 'temp'
-apm = require '../lib/apm-cli'
+recrue = require '../lib/recrue-cli'
 
-describe "apm develop", ->
+describe "recrue develop", ->
   [repoPath, linkedRepoPath] = []
 
   beforeEach ->
     silenceOutput()
     spyOnToken()
 
-    atomHome = temp.mkdirSync('apm-home-dir-')
+    atomHome = temp.mkdirSync('recrue-home-dir-')
     process.env.ATOM_HOME = atomHome
 
-    atomReposHome = temp.mkdirSync('apm-repos-home-dir-')
+    atomReposHome = temp.mkdirSync('recrue-repos-home-dir-')
     process.env.ATOM_REPOS_HOME = atomReposHome
 
     repoPath = path.join(atomReposHome, 'fake-package')
@@ -26,7 +26,7 @@ describe "apm develop", ->
         callback("Here is the error")
 
       callback = jasmine.createSpy('callback')
-      apm.run(['develop', "fake-package"], callback)
+      recrue.run(['develop', "fake-package"], callback)
 
       waitsFor 'waiting for develop to complete', ->
         callback.callCount is 1
@@ -46,7 +46,7 @@ describe "apm develop", ->
         @linkPackage(packageDirectory, options)
 
       callback = jasmine.createSpy('callback')
-      apm.run(['develop', "fake-package"], callback)
+      recrue.run(['develop', "fake-package"], callback)
 
       waitsFor 'waiting for develop to complete', ->
         callback.callCount is 1
@@ -63,7 +63,7 @@ describe "apm develop", ->
       fs.makeTreeSync(repoPath)
       fs.writeFileSync(path.join(repoPath, "package.json"), "")
       callback = jasmine.createSpy('callback')
-      apm.run(['develop', "fake-package"], callback)
+      recrue.run(['develop', "fake-package"], callback)
 
       waitsFor 'waiting for develop to complete', ->
         callback.callCount is 1

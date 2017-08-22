@@ -1,7 +1,7 @@
 npm = require 'npm'
 request = require 'request'
 
-config = require './apm'
+config = require './recrue'
 
 loadNpm = (callback) ->
   npmOptions =

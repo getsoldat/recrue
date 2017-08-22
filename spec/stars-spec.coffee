@@ -3,9 +3,9 @@ express = require 'express'
 fs = require 'fs-plus'
 http = require 'http'
 temp = require 'temp'
-apm = require '../lib/apm-cli'
+recrue = require '../lib/recrue-cli'
 
-describe 'apm stars', ->
+describe 'recrue stars', ->
   [atomHome, server] = []
 
   beforeEach ->
@@ -34,7 +34,7 @@ describe 'apm stars', ->
     server =  http.createServer(app)
     server.listen(3000)
 
-    atomHome = temp.mkdirSync('apm-home-dir-')
+    atomHome = temp.mkdirSync('recrue-home-dir-')
     process.env.ATOM_HOME = atomHome
     process.env.ATOM_API_URL = "http://localhost:3000"
     process.env.ATOM_ELECTRON_URL = "http://localhost:3000/node"
@@ -47,7 +47,7 @@ describe 'apm stars', ->
   describe "when no user flag is specified", ->
     it 'lists your starred packages', ->
       callback = jasmine.createSpy('callback')
-      apm.run(['stars'], callback)
+      recrue.run(['stars'], callback)
 
       waitsFor 'waiting for command to complete', ->
         callback.callCount > 0
@@ -59,7 +59,7 @@ describe 'apm stars', ->
   describe "when a user flag is specified", ->
     it 'lists their starred packages', ->
       callback = jasmine.createSpy('callback')
-      apm.run(['stars', '--user', 'hubot'], callback)
+      recrue.run(['stars', '--user', 'hubot'], callback)
 
       waitsFor 'waiting for command to complete', ->
         callback.callCount > 0
@@ -73,7 +73,7 @@ describe 'apm stars', ->
       testModuleDirectory = path.join(atomHome, 'packages', 'test-module')
       expect(fs.existsSync(testModuleDirectory)).toBeFalsy()
       callback = jasmine.createSpy('callback')
-      apm.run(['stars', '--user', 'hubot', '--install'], callback)
+      recrue.run(['stars', '--user', 'hubot', '--install'], callback)
 
       waitsFor 'waiting for command to complete', ->
         callback.callCount > 0
@@ -86,7 +86,7 @@ describe 'apm stars', ->
   describe 'when the theme flag is specified', ->
     it "only lists themes", ->
       callback = jasmine.createSpy('callback')
-      apm.run(['stars', '--themes'], callback)
+      recrue.run(['stars', '--themes'], callback)
 
       waitsFor 'waiting for command to complete', ->
         callback.callCount > 0

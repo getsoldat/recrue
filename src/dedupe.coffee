@@ -4,7 +4,7 @@ async = require 'async'
 _ = require 'underscore-plus'
 yargs = require 'yargs'
 
-config = require './apm'
+config = require './recrue'
 Command = require './command'
 fs = require './fs'
 
@@ -23,7 +23,7 @@ class Dedupe extends Command
     options = yargs(argv).wrap(100)
     options.usage """
 
-      Usage: apm dedupe [<package_name>...]
+      Usage: recrue dedupe [<package_name>...]
 
       Reduce duplication in the node_modules folder in the current directory.
 

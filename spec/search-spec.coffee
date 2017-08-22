@@ -1,9 +1,9 @@
 path = require 'path'
 express = require 'express'
 http = require 'http'
-apm = require '../lib/apm-cli'
+recrue = require '../lib/recrue-cli'
 
-describe 'apm search', ->
+describe 'recrue search', ->
   server = null
 
   beforeEach ->
@@ -23,7 +23,7 @@ describe 'apm search', ->
 
   it 'lists the matching packages and excludes deprecated packages', ->
     callback = jasmine.createSpy('callback')
-    apm.run(['search', 'duck'], callback)
+    recrue.run(['search', 'duck'], callback)
 
     waitsFor 'waiting for command to complete', ->
       callback.callCount > 0
@@ -37,7 +37,7 @@ describe 'apm search', ->
 
   it "logs an error if the query is missing or empty", ->
     callback = jasmine.createSpy('callback')
-    apm.run(['search'], callback)
+    recrue.run(['search'], callback)
 
     waitsFor 'waiting for command to complete', ->
       callback.callCount > 0

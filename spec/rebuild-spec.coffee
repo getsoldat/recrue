@@ -5,9 +5,9 @@ temp = require 'temp'
 express = require 'express'
 http = require 'http'
 wrench = require 'wrench'
-apm = require '../lib/apm-cli'
+recrue = require '../lib/recrue-cli'
 
-describe 'apm rebuild', ->
+describe 'recrue rebuild', ->
   [server, originalPathEnv] = []
 
   beforeEach ->
@@ -27,7 +27,7 @@ describe 'apm rebuild', ->
     server =  http.createServer(app)
     server.listen(3000)
 
-    atomHome = temp.mkdirSync('apm-home-dir-')
+    atomHome = temp.mkdirSync('recrue-home-dir-')
     process.env.ATOM_HOME = atomHome
     process.env.ATOM_ELECTRON_URL = "http://localhost:3000/node"
     process.env.ATOM_PACKAGES_URL = "http://localhost:3000/packages"
@@ -46,7 +46,7 @@ describe 'apm rebuild', ->
 
     process.chdir(packageToRebuild)
     callback = jasmine.createSpy('callback')
-    apm.run(['rebuild'], callback)
+    recrue.run(['rebuild'], callback)
 
     waitsFor 'waiting for rebuild to complete', 600000, ->
       callback.callCount is 1
@@ -59,7 +59,7 @@ describe 'apm rebuild', ->
 
     process.chdir(packageToRebuild)
     callback = jasmine.createSpy('callback')
-    apm.run(['rebuild', 'native-dep'], callback)
+    recrue.run(['rebuild', 'native-dep'], callback)
 
     waitsFor 'waiting for rebuild to complete', 600000, ->
       callback.callCount is 1

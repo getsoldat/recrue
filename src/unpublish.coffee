@@ -5,7 +5,7 @@ yargs = require 'yargs'
 
 auth = require './auth'
 Command = require './command'
-config = require './apm'
+config = require './recrue'
 fs = require './fs'
 request = require './request'
 
@@ -17,8 +17,8 @@ class Unpublish extends Command
     options = yargs(argv).wrap(100)
 
     options.usage """
-      Usage: apm unpublish [<package_name>]
-             apm unpublish <package_name>@<package_version>
+      Usage: recrue unpublish [<package_name>]
+             recrue unpublish <package_name>@<package_version>
 
       Remove a published package or package version from the atom.io registry.
 
@@ -68,7 +68,7 @@ class Unpublish extends Command
       question = "Are you sure you want to unpublish '#{packageLabel}'? (no) "
     else
       question = "Are you sure you want to unpublish ALL VERSIONS of '#{packageLabel}'? " +
-                 "This will remove it from the apm registry, including " +
+                 "This will remove it from the recrue registry, including " +
                  "download counts and stars, and this action is irreversible. (no)"
 
     @prompt question, (answer) =>

@@ -3,15 +3,15 @@ path = require 'path'
 temp = require 'temp'
 CSON = require 'season'
 
-apm = require '../lib/apm-cli'
+recrue = require '../lib/recrue-cli'
 
-describe 'apm enable', ->
+describe 'recrue enable', ->
   beforeEach ->
     silenceOutput()
     spyOnToken()
 
   it 'enables a disabled package', ->
-    atomHome = temp.mkdirSync('apm-home-dir-')
+    atomHome = temp.mkdirSync('recrue-home-dir-')
     process.env.ATOM_HOME = atomHome
     callback = jasmine.createSpy('callback')
     configFilePath = path.join(atomHome, 'config.cson')
@@ -26,7 +26,7 @@ describe 'apm enable', ->
         ]
 
     runs ->
-      apm.run(['enable', 'vim-mode', 'not-installed', 'file-icons'], callback)
+      recrue.run(['enable', 'vim-mode', 'not-installed', 'file-icons'], callback)
 
     waitsFor 'waiting for enable to complete', ->
       callback.callCount > 0
@@ -45,7 +45,7 @@ describe 'apm enable', ->
           ]
 
   it 'does nothing if a package is already enabled', ->
-    atomHome = temp.mkdirSync('apm-home-dir-')
+    atomHome = temp.mkdirSync('recrue-home-dir-')
     process.env.ATOM_HOME = atomHome
     callback = jasmine.createSpy('callback')
     configFilePath = path.join(atomHome, 'config.cson')
@@ -58,7 +58,7 @@ describe 'apm enable', ->
         ]
 
     runs ->
-      apm.run(['enable', 'vim-mode'], callback)
+      recrue.run(['enable', 'vim-mode'], callback)
 
     waitsFor 'waiting for enable to complete', ->
       callback.callCount > 0
@@ -76,12 +76,12 @@ describe 'apm enable', ->
           ]
 
   it 'produces an error if config.cson doesn\'t exist', ->
-    atomHome = temp.mkdirSync('apm-home-dir-')
+    atomHome = temp.mkdirSync('recrue-home-dir-')
     process.env.ATOM_HOME = atomHome
     callback = jasmine.createSpy('callback')
 
     runs ->
-      apm.run(['enable', 'vim-mode'], callback)
+      recrue.run(['enable', 'vim-mode'], callback)
 
     waitsFor 'waiting for enable to complete', ->
       callback.callCount > 0
@@ -91,12 +91,12 @@ describe 'apm enable', ->
       expect(console.error.argsForCall[0][0].length).toBeGreaterThan 0
 
   it 'complains if user supplies no packages', ->
-    atomHome = temp.mkdirSync('apm-home-dir-')
+    atomHome = temp.mkdirSync('recrue-home-dir-')
     process.env.ATOM_HOME = atomHome
     callback = jasmine.createSpy('callback')
 
     runs ->
-      apm.run(['enable'], callback)
+      recrue.run(['enable'], callback)
 
     waitsFor 'waiting for enable to complete', ->
       callback.callCount > 0
