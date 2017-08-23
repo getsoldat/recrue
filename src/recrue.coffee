@@ -62,7 +62,7 @@ module.exports =
     process.env.SOLDAT_PACKAGES_URL ? "#{@getSoldatApiUrl()}/packages"
 
   getSoldatApiUrl: ->
-    process.env.SOLDAT_API_URL ? 'https://soldat.lemarier.sh/'
+    process.env.SOLDAT_API_URL ? 'https://soldat.lemarier.sh'
 
   getElectronArch: ->
     switch process.platform
