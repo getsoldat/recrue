@@ -1,7 +1,7 @@
 # Recrue - Soldat Package Manager
 
 [![Linux Build Status](https://travis-ci.org/getsoldat/recrue.svg?branch=master)](https://travis-ci.org/getsoldat/recrue)
-[![Windows Build Status](https://ci.appveyor.com/api/projects/status/ax8dmfvy5nm6lemq?svg=true)](https://ci.appveyor.com/project/getsoldat/recrue/branch/master)
+[![Windows Build Status](https://ci.appveyor.com/api/projects/status/t8buve7xk1alf46s?svg=true)](https://ci.appveyor.com/project/getsoldat/recrue/branch/master)
 [![Dependency Status](https://david-dm.org/getsoldat/recrue.svg)](https://david-dm.org/getsoldat/recrue)
 
 Discover and install Soldat packages powered by [soldat.tv](https://soldat.tv)
