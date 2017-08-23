@@ -56,13 +56,13 @@ module.exports =
     process.env.SOLDAT_REPOS_HOME ? path.join(@getHomeDirectory(), 'github')
 
   getElectronUrl: ->
-    process.env.SOLDAT_ELECTRON_URL ? 'https://soldat.tv/download/electron'
+    process.env.SOLDAT_ELECTRON_URL ? 'https://atom.io/download/electron'
 
   getSoldatPackagesUrl: ->
     process.env.SOLDAT_PACKAGES_URL ? "#{@getSoldatApiUrl()}/packages"
 
   getSoldatApiUrl: ->
-    process.env.SOLDAT_API_URL ? 'https://soldat.tv/api'
+    process.env.SOLDAT_API_URL ? 'https://soldat.lemarier.sh/'
 
   getElectronArch: ->
     switch process.platform
