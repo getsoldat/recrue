@@ -67,56 +67,6 @@ describe "recrue init", ->
           expect(JSON.parse(fs.readFileSync(path.join(packagePath, 'package.json'))).name).toBe 'fake-package'
           expect(JSON.parse(fs.readFileSync(path.join(packagePath, 'package.json'))).repository).toBe 'https://github.com/somebody/fake-package'
 
-    describe "when package syntax is unsupported", ->
-      it "logs an error", ->
-        callback = jasmine.createSpy('callback')
-        recrue.run(['init', '--syntax', 'something-unsupported', '--package', 'fake-package'], callback)
-
-        waitsFor 'waiting for init to complete', ->
-          callback.callCount is 1
-
-        runs ->
-          expect(callback.argsForCall[0][0].length).toBeGreaterThan 0
-
-    describe "when converting a TextMate bundle", ->
-      beforeEach ->
-        callback = jasmine.createSpy('callback')
-        textMateBundlePath = path.join(__dirname, 'fixtures', 'r.tmbundle')
-        recrue.run(['init', '--package', 'fake-package', '--convert', textMateBundlePath], callback)
-
-        waitsFor 'waiting for init to complete', ->
-          callback.callCount is 1
-
-      it "generates the proper file structure", ->
-        expect(fs.existsSync(packagePath)).toBeTruthy()
-        expect(fs.isFileSync(path.join(packagePath, 'settings', 'fake-package.cson'))).toBe true
-        expect(fs.isFileSync(path.join(packagePath, 'snippets', 'fake-package.cson'))).toBe true
-        expect(fs.isFileSync(path.join(packagePath, 'grammars', 'r.cson'))).toBe true
-        expect(fs.existsSync(path.join(packagePath, 'command'))).toBeFalsy()
-        expect(fs.existsSync(path.join(packagePath, 'README.md'))).toBeTruthy()
-        expect(fs.existsSync(path.join(packagePath, 'package.json'))).toBeTruthy()
-        expect(fs.existsSync(path.join(packagePath, 'LICENSE.md'))).toBeFalsy()
-        expect(JSON.parse(fs.readFileSync(path.join(packagePath, 'package.json'))).name).toBe 'fake-package'
-        expect(JSON.parse(fs.readFileSync(path.join(packagePath, 'package.json'))).repository).toBe 'https://github.com/somebody/fake-package'
-        expect(CSON.readFileSync(path.join(packagePath, 'snippets', 'fake-package.cson'))['.source.rd.tm']['Attach']).toEqual {
-          body: 'attach($1) *outlet'
-          prefix: 'att'
-        }
-        expect(CSON.readFileSync(path.join(packagePath, 'settings', 'fake-package.cson'))['.source.r']['editor']).toEqual {
-          foldEndPattern: '(^\\s*\\)|^\\s*\\})'
-          commentStart: '# '
-        }
-
-      it "unescapes escaped dollar signs `$` in snippets", ->
-        forLoopBody = CSON.readFileSync(path.join(packagePath, 'snippets', 'fake-package.cson'))['.source.perl']['For Loop'].body
-        forLoopBody = forLoopBody.replace(/\r?\n/g, '\n')
-        expect(forLoopBody).toBe """
-          for (my $${1:var} = 0; $$1 < ${2:expression}; $$1++) {
-          \t${3:# body...}
-          }
-
-        """
-
   describe "when creating a theme", ->
     it "generates the proper file structure", ->
       callback = jasmine.createSpy('callback')
@@ -135,54 +85,6 @@ describe "recrue init", ->
         expect(fs.existsSync(path.join(themePath, 'package.json'))).toBeTruthy()
         expect(JSON.parse(fs.readFileSync(path.join(themePath, 'package.json'))).name).toBe 'fake-theme'
         expect(JSON.parse(fs.readFileSync(path.join(themePath, 'package.json'))).repository).toBe 'https://github.com/somebody/fake-theme'
-
-    describe "when converting a TextMate theme", ->
-      it "generates the proper file structure", ->
-        callback = jasmine.createSpy('callback')
-        textMateThemePath = path.join(__dirname, 'fixtures', 'Dawn.tmTheme')
-        recrue.run(['init', '--theme', 'fake-theme', '--convert', textMateThemePath], callback)
-
-        waitsFor 'waiting for init to complete', ->
-          callback.callCount is 1
-
-        runs ->
-          expect(fs.existsSync(themePath)).toBeTruthy()
-          expect(fs.existsSync(path.join(themePath, 'styles'))).toBeTruthy()
-          expect(fs.readFileSync(path.join(themePath, 'styles', 'syntax-variables.less'), 'utf8')).toContain """
-            @syntax-gutter-text-color: #080808;
-            @syntax-gutter-text-color-selected: #080808;
-            @syntax-gutter-background-color: #F5F5F5;
-            @syntax-gutter-background-color-selected: rgba(0, 108, 125, 0.07);
-          """
-          expect(fs.readFileSync(path.join(themePath, 'styles', 'base.less'), 'utf8')).toContain """
-            @import "syntax-variables";
-
-            soldat-text-editor {
-              background-color: @syntax-background-color;
-              color: @syntax-text-color;
-            }
-
-            soldat-text-editor .gutter {
-              background-color: @syntax-gutter-background-color;
-              color: @syntax-gutter-text-color;
-            }
-          """
-          expect(fs.existsSync(path.join(themePath, 'README.md'))).toBeTruthy()
-          expect(fs.existsSync(path.join(themePath, 'package.json'))).toBeTruthy()
-          expect(fs.existsSync(path.join(themePath, 'LICENSE.md'))).toBeFalsy()
-          expect(JSON.parse(fs.readFileSync(path.join(themePath, 'package.json'))).name).toBe 'fake-theme'
-          expect(JSON.parse(fs.readFileSync(path.join(themePath, 'package.json'))).repository).toBe 'https://github.com/somebody/fake-theme'
-
-      it "logs an error if it doesn't have all the required color settings", ->
-        callback = jasmine.createSpy('callback')
-        textMateThemePath = path.join(__dirname, 'fixtures', 'Bad.tmTheme')
-        recrue.run(['init', '--theme', 'fake-theme', '--convert', textMateThemePath], callback)
-
-        waitsFor 'waiting for init to complete', ->
-          callback.callCount is 1
-
-        runs ->
-          expect(callback.argsForCall[0][0].message.length).toBeGreaterThan 0
 
   describe "when creating a language", ->
     it "generates the proper file structure", ->

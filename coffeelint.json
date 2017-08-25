@@ -2,6 +2,9 @@
   "max_line_length": {
     "level": "ignore"
   },
+  "line_endings": {
+    "level": "ignore"
+  },
   "no_empty_param_list": {
     "level": "error"
   },
@@ -26,7 +29,7 @@
   },
   "braces_spacing": {
     "spaces": 0,
-    "level": "error"
+    "level": "ignore"
   },
   "spacing_after_comma": {
     "level": "error"
