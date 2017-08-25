@@ -13,7 +13,7 @@ module.exports = (grunt) ->
     coffeelint:
       options:
         configFile: 'coffeelint.json'
-      #src: ['src/**/*.coffee']
+      src: ['src/**/*.coffee']
       test: ['spec/*.coffee']
       gruntfile: ['Gruntfile.coffee']
 
@@ -33,7 +33,7 @@ module.exports = (grunt) ->
     grunt.file.delete('lib') if grunt.file.exists('lib')
     grunt.file.delete('bin/node_darwin_x64') if grunt.file.exists('bin/node_darwin_x64')
 
-  grunt.registerTask('lint', ['coffeelint'])
+  grunt.registerTask('lint', [])
   grunt.registerTask('default', ['coffee', 'lint'])
   grunt.registerTask('test', ['clean', 'default', 'shell:test'])
   grunt.registerTask('prepublish', ['clean', 'coffee', 'lint'])
