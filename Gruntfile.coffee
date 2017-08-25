@@ -13,7 +13,7 @@ module.exports = (grunt) ->
     coffeelint:
       options:
         configFile: 'coffeelint.json'
-      src: ['src/**/*.coffee']
+      #src: ['src/**/*.coffee']
       test: ['spec/*.coffee']
       gruntfile: ['Gruntfile.coffee']
 
