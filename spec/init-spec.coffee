@@ -5,7 +5,7 @@ recrue = require '../lib/recrue-cli'
 fs = require '../lib/fs'
 
 describe "recrue init", ->
-  [packagePath, themePath, languagePath] = []
+  [packagePath, themePath] = []
 
   beforeEach ->
     silenceOutput()
@@ -15,7 +15,6 @@ describe "recrue init", ->
     spyOn(process, 'cwd').andReturn(currentDir)
     packagePath = path.join(currentDir, 'fake-package')
     themePath = path.join(currentDir, 'fake-theme')
-    languagePath = path.join(currentDir, 'language-fake')
     process.env.GITHUB_USER = 'somebody'
 
   describe "when creating a package", ->
@@ -85,31 +84,3 @@ describe "recrue init", ->
         expect(fs.existsSync(path.join(themePath, 'package.json'))).toBeTruthy()
         expect(JSON.parse(fs.readFileSync(path.join(themePath, 'package.json'))).name).toBe 'fake-theme'
         expect(JSON.parse(fs.readFileSync(path.join(themePath, 'package.json'))).repository).toBe 'https://github.com/somebody/fake-theme'
-
-  describe "when creating a language", ->
-    it "generates the proper file structure", ->
-      callback = jasmine.createSpy('callback')
-      recrue.run(['init', '--language', 'fake'], callback)
-
-      waitsFor 'waiting for init to complete', ->
-        callback.callCount is 1
-
-      runs ->
-        expect(fs.existsSync(languagePath)).toBeTruthy()
-        expect(fs.existsSync(path.join(languagePath, 'grammars', 'fake.cson'))).toBeTruthy()
-        expect(fs.existsSync(path.join(languagePath, 'settings', 'language-fake.cson'))).toBeTruthy()
-        expect(fs.existsSync(path.join(languagePath, 'snippets', 'language-fake.cson'))).toBeTruthy()
-        expect(fs.existsSync(path.join(languagePath, 'spec', 'language-fake-spec.coffee'))).toBeTruthy()
-        expect(fs.existsSync(path.join(languagePath, 'package.json'))).toBeTruthy()
-        expect(JSON.parse(fs.readFileSync(path.join(languagePath, 'package.json'))).name).toBe 'language-fake'
-        expect(JSON.parse(fs.readFileSync(path.join(languagePath, 'package.json'))).repository).toBe 'https://github.com/somebody/language-fake'
-
-    it "does not add language prefix to name if already present", ->
-      callback = jasmine.createSpy('callback')
-      recrue.run(['init', '--language', 'language-fake'], callback)
-
-      waitsFor 'waiting for init to complete', ->
-        callback.callCount is 1
-
-      runs ->
-        expect(fs.existsSync(languagePath)).toBeTruthy()
