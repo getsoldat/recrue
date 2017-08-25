@@ -18,16 +18,11 @@ class Init extends Command
       Usage:
         recrue init -p <package-name>
         recrue init -p <package-name> --syntax <javascript-or-coffeescript>
-        recrue init -p <package-name> -c ~/Downloads/r.tmbundle
-        recrue init -p <package-name> -c https://github.com/textmate/r.tmbundle
         recrue init -p <package-name> --template /path/to/your/package/template
 
         recrue init -t <theme-name>
         recrue init -t <theme-name> -c ~/Downloads/Dawn.tmTheme
-        recrue init -t <theme-name> -c https://raw.github.com/chriskempson/tomorrow-theme/master/textmate/Tomorrow-Night-Eighties.tmTheme
         recrue init -t <theme-name> --template /path/to/your/theme/template
-
-        recrue init -l <language-name>
 
       Generates code scaffolding for either a theme or package depending
       on the option selected.
@@ -35,8 +30,6 @@ class Init extends Command
     options.alias('p', 'package').string('package').describe('package', 'Generates a basic package')
     options.alias('s', 'syntax').string('syntax').describe('syntax', 'Sets package syntax to CoffeeScript or JavaScript')
     options.alias('t', 'theme').string('theme').describe('theme', 'Generates a basic theme')
-    options.alias('l', 'language').string('language').describe('language', 'Generates a basic language package')
-    options.alias('c', 'convert').string('convert').describe('convert', 'Path or URL to TextMate bundle/theme to convert')
     options.alias('h', 'help').describe('help', 'Print this usage message')
     options.string('template').describe('template', 'Path to the package or theme template')
 
@@ -44,50 +37,24 @@ class Init extends Command
     {callback} = options
     options = @parseOptions(options.commandArgs)
     if options.argv.package?.length > 0
-      if options.argv.convert
-        @convertPackage(options.argv.convert, options.argv.package, callback)
-      else
-        packagePath = path.resolve(options.argv.package)
-        syntax = options.argv.syntax or @supportedSyntaxes[0]
-        if syntax not in @supportedSyntaxes
-          return callback("You must specify one of #{@supportedSyntaxes.join(', ')} after the --syntax argument")
-        templatePath = @getTemplatePath(options.argv, "package-#{syntax}")
-        @generateFromTemplate(packagePath, templatePath)
-        callback()
+      packagePath = path.resolve(options.argv.package)
+      syntax = options.argv.syntax or @supportedSyntaxes[0]
+      if syntax not in @supportedSyntaxes
+        return callback("You must specify one of #{@supportedSyntaxes.join(', ')} after the --syntax argument")
+      templatePath = @getTemplatePath(options.argv, "package-#{syntax}")
+      @generateFromTemplate(packagePath, templatePath)
+      callback()
     else if options.argv.theme?.length > 0
       themePath = path.resolve(options.argv.theme)
       templatePath = @getTemplatePath(options.argv, 'theme')
       @generateFromTemplate(themePath, templatePath)
-      callback()
-    else if options.argv.language?.length > 0
-      languagePath = path.resolve(options.argv.language)
-      languageName = path.basename(languagePath).replace(/^language-/, '')
-      languagePath = path.join(path.dirname(languagePath), "language-#{languageName}")
-      templatePath = @getTemplatePath(options.argv, 'language')
-      @generateFromTemplate(languagePath, templatePath, languageName)
       callback()
     else if options.argv.package?
       callback('You must specify a path after the --package argument')
     else if options.argv.theme?
       callback('You must specify a path after the --theme argument')
     else
-      callback('You must specify either --package, --theme or --language to `recrue init`')
-
-  convertPackage: (sourcePath, destinationPath, callback) ->
-    unless destinationPath
-      callback("Specify directory to create package in using --package")
-      return
-
-    PackageConverter = require './package-converter'
-    converter = new PackageConverter(sourcePath, destinationPath)
-    converter.convert (error) =>
-      if error?
-        callback(error)
-      else
-        destinationPath = path.resolve(destinationPath)
-        templatePath = path.resolve(__dirname, '..', 'templates', 'bundle')
-        @generateFromTemplate(destinationPath, templatePath)
-        callback()
+      callback('You must specify either --package, --theme to `recrue init`')
 
   generateFromTemplate: (packagePath, templatePath, packageName) ->
     packageName ?= path.basename(packagePath)
