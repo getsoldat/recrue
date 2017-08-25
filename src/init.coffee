@@ -55,13 +55,10 @@ class Init extends Command
         @generateFromTemplate(packagePath, templatePath)
         callback()
     else if options.argv.theme?.length > 0
-      if options.argv.convert
-        @convertTheme(options.argv.convert, options.argv.theme, callback)
-      else
-        themePath = path.resolve(options.argv.theme)
-        templatePath = @getTemplatePath(options.argv, 'theme')
-        @generateFromTemplate(themePath, templatePath)
-        callback()
+      themePath = path.resolve(options.argv.theme)
+      templatePath = @getTemplatePath(options.argv, 'theme')
+      @generateFromTemplate(themePath, templatePath)
+      callback()
     else if options.argv.language?.length > 0
       languagePath = path.resolve(options.argv.language)
       languageName = path.basename(languagePath).replace(/^language-/, '')
@@ -90,24 +87,6 @@ class Init extends Command
         destinationPath = path.resolve(destinationPath)
         templatePath = path.resolve(__dirname, '..', 'templates', 'bundle')
         @generateFromTemplate(destinationPath, templatePath)
-        callback()
-
-  convertTheme: (sourcePath, destinationPath, callback) ->
-    unless destinationPath
-      callback("Specify directory to create theme in using --theme")
-      return
-
-    ThemeConverter = require './theme-converter'
-    converter = new ThemeConverter(sourcePath, destinationPath)
-    converter.convert (error) =>
-      if error?
-        callback(error)
-      else
-        destinationPath = path.resolve(destinationPath)
-        templatePath = path.resolve(__dirname, '..', 'templates', 'theme')
-        @generateFromTemplate(destinationPath, templatePath)
-        fs.removeSync(path.join(destinationPath, 'styles', 'colors.less'))
-        fs.removeSync(path.join(destinationPath, 'LICENSE.md'))
         callback()
 
   generateFromTemplate: (packagePath, templatePath, packageName) ->
